@@ -1,0 +1,540 @@
+@font-face {
+    font-family: 'egg_hunter';
+    src: url('/fonts/egg_hunter.ttf') format('truetype');
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    font-family: 'egg_hunter', sans-serif;
+    background-color: white;
+    position: relative;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
+  header .row {
+    margin-top: -60px;
+    margin-left: -40px;
+  }
+  
+  /* Fondo rosa detrás */
+  header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: calc(100% - 80px); /* o el valor que tú necesites */
+    width: 100vw;              /* para que siempre cubra toda la pantalla */
+    background-color: #FF007E;
+    z-index: -1;
+  
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+  
+  .logo-grande {
+    height: 180px;        /* 20% más grande que 150px */
+    margin-top: 10px;     /* Lo bajas visualmente */
+  }
+  
+  /* Menú */
+  .nav-link-custom {
+    color: #FFD200;
+    margin: 0 10px;
+    letter-spacing: 3px;
+    font-size: 28px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  
+  .nav-link-custom:hover {
+    color: white !important;
+    transform: scale(1.1);
+  }
+  
+  .nav-link-custom.active {
+    color: white !important;
+  }
+  
+  /* Toggle botón menú móvil */
+  .menu-toggle {
+    display: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: #FFD200;
+    margin-bottom: 10px;
+  }
+  
+  /*BARRA*/
+  
+  
+  .frase-barra {
+    margin-top: -40px;
+    margin-left: -10px;
+    padding-bottom: -10px;
+    background-color: #00CFFF;
+    overflow: hidden;
+    height: 60px; /* deja la altura como está */
+    width: 100vw;
+    position: relative;
+    white-space: nowrap;
+    z-index: -1;
+    box-shadow: inset 0 -20px 0 white; /* 🔥 ESTO recorta visualmente 5px por abajo */
+    border-radius: 8px;
+  }
+  
+  .frase-slider {
+    display: inline-block;
+    white-space: nowrap;
+    animation: ticker 40s linear infinite;
+  }
+  
+  .frase-slider span {
+    display: inline-block;
+    padding: 0 50px;
+    font-size: 16px;
+    color: white;
+    line-height: 40px;
+    font-weight: bold;
+    letter-spacing: 2px; /* 👈 Aquí defines la separación entre letras */
+  
+  }
+  
+  /* ===== Móvil ===== */
+  .frase-barra-movil {
+    display: none;
+  }
+  
+  .custom-rounded {
+    background-color: #ffffff;
+    border-radius: 15px; /* 🔁 Ajusta el nivel de redondez aquí */
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* opcional para dar un efecto elevado */
+    margin-top: 30px;
+  }
+  /* Animación */
+  @keyframes ticker {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-20%); }
+  }
+  
+  
+  #slider-1 {
+    margin-top: -20px;
+    border-radius: 20px; /* puedes ajustar a tu gusto */
+    overflow: hidden;    /* importante para que las esquinas se corten bien */
+  }
+  
+  
+  
+  
+  
+  
+  
+  /*🎨 CSS para estilo, botones y transición slider de barra principal central*/
+  
+  .product-slider {
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .product-slides {
+    position: relative;
+    width: 100%;
+  }
+  
+  .product-img {
+    max-height: 400px;
+    max-width: 100%;
+    display: none;
+    margin: 0 auto;
+    transition: opacity 0.5s ease;
+  }
+  
+  .product-img.active {
+    display: block;
+  }
+  
+  
+  .slider-btn {
+    position: absolute;
+    bottom: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: white;
+    color: #FF007E;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 2;
+  }
+  
+  .slider-btn:hover {
+    background-color: #eaeaea;
+  }
+  
+  .prev-btn {
+    left: 20px;
+  }
+  
+  .next-btn {
+    right: 20px;
+  }
+  
+  
+  /* SLIDER DE RRSS*/
+  @font-face {
+    font-family: 'egg_hunter';
+    src: url('fonts/egg_hunter.ttf') format('truetype');
+  }
+  
+  .scrolling-button {
+    font-family: 'egg_hunter';
+    letter-spacing: 5px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    padding: 0;
+  }
+  
+  .scrolling-text {
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+  
+  @font-face {
+    font-family: 'the_fruit_star';
+    src: url('/fonts/the_fruit_star.ttf') format('truetype');
+  }
+  
+  /* Animaciones infinitas sin corte */
+  .left-to-right .scrolling-text {
+    animation: scrollLTR 20s linear infinite;
+  }
+  
+  .right-to-left .scrolling-text {
+    animation: scrollRTL 20s linear infinite;
+  }
+  
+  @keyframes scrollLTR {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+  
+  @keyframes scrollRTL {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  
+  
+  /* SLIDER PRODUCTOS */
+  
+  .img-destacada {
+    width: 300px;
+    height: 300px;
+    transition: transform 0.3s ease;
+  }
+  
+  .img-destacada:hover {
+    transform: translateY(-10px);
+  }
+  
+  
+  
+  /* SOCIAL IMAGENES */
+  
+  .img-hover {
+    transition: transform 0.4s ease;
+    cursor: pointer;
+  }
+  
+  .img-hover:hover {
+    transform: scale(1.1);
+  }
+  
+  
+  /* FOOTER */
+  @font-face {
+    font-family: 'egg_hunter';
+    src: url('/fonts/egg_hunter.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  .subscribe-btn {
+    background-color: #FF007E;
+    color: white;
+    transition: all 0.3s ease;
+  }
+  
+  .subscribe-btn:hover {
+    background-color: #e6006c; /* un tono más oscuro */
+    color: white;
+    transform: scale(1.05);   /* crece un poquito */
+  }
+  
+  /* Aplica a los enlaces del footer */
+  .footer-link {
+    font-family: 'egg_hunter', sans-serif;
+    color: #ffffff;
+    font-size: 25px;
+    text-decoration: none;
+  }
+  
+  .footer-link {
+    font-family: 'egg_hunter', sans-serif;
+    color: #ffffff;
+    font-size: 25px;
+    text-decoration: none;
+    border-bottom: 2px solid #ffffff; /* línea decorativa */
+    padding-bottom: 2px; /* espacio entre texto y línea */
+    letter-spacing: 5px; /* separación entre letras */
+  }
+  
+  .footer-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Títulod de let's be friends */
+  
+  @font-face {
+    font-family: 'egg_hunter';
+    src: url('fonts/egg_hunter.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  #friends-title {
+    font-family: 'egg_hunter', sans-serif;
+    color: #FF007E;
+  }
+  
+  
+  
+  
+  /* social iconos*/
+  
+  .social-icon i {
+    transition: transform 0.3s ease;
+  }
+  
+  .social-icon:hover i {
+    transform: scale(1.3);
+  }
+  
+  
+  
+  @media (max-width: 768px) {
+    .img-hover {
+      margin-bottom: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+  
+  /* barra*/
+    .frase-barra {
+      display: none;
+    }
+  
+    .header-web {
+      transform: translateX(0);
+      text-align: center;
+      padding-bottom: 30px; /* Aumenta espacio abajo para evitar corte del login */
+    }
+  
+     .logo-grande {
+      height: 120px;
+      display: block;
+      margin: 40px auto 0 auto; /* 🔽 Baja el logo 20px */
+    }
+  
+  
+    .menu-toggle {
+      display: block;
+      margin: 0 auto;
+    }
+  
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .nav-links.active {
+      display: flex;
+    }
+  
+    .nav-link-custom {
+      display: block;
+      margin: 10px 0;
+      font-size: 22px;
+    }
+  
+    .my-account-link {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+      text-align: center;
+    }
+  
+    header::before {
+      height: 100%;
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
+  /* DISEÑO DE LOGIN */
+  
+  .my-container-login,
+  .my-container-register {
+    border: 1px solid #ccc; /* contorno gris */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* sombreado */
+    border-radius: 5px; /* esquinas redondeadas */
+    padding: 20px;
+    margin-bottom: 40px; /* separación entre secciones y footer */
+    max-width: 400px;
+  }
+  
+  .my-container-register {
+    margin-top: 20px; /* separación respecto al login */
+  }
+  
+  
+  
+  h2.text-center {
+    color: #FF007E; /* color morado */
+    font-family: 'egg_hunter', sans-serif; /* tu fuente */
+    letter-spacing: 5px; /* separación entre letras */
+  }
+  
+  .my-container-login h2.text-center {
+    color: #FF007E;
+    font-family: 'egg_hunter', sans-serif;
+    letter-spacing: 5px;
+  }
+  
+  
+  
+  #btnSignIn {
+    background-color: #FF007E;
+    border-color: #FF007E;
+    transition: background-color 0.3s ease;
+  }
+  
+  #btnSignIn:disabled {
+    background-color: #cc006a;
+    border-color: #cc006a;
+    cursor: not-allowed;
+  }
+  
+  
+  #btnRegister {
+    background-color: #FF007E;
+    border-color: #FF007E;
+    transition: background-color 0.3s ease;
+  }
+  
+  #btnRegister:disabled {
+    background-color: #861d51; /* morado más oscuro */
+    border-color:#861d51;
+    cursor: not-allowed;
+  }
+  
+  .register-card {
+    max-width: 500px;
+    padding: 20px;
+    border: 1px solid #ccc; /* borde gris */
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* sombra */
+    background-color: #fff; /* fondo blanco */
+  }
+  
+  
+  
+  /* ACCOUNT COLUMNA IZQ*/
+  
+  @font-face {
+    font-family: 'egg_hunter';
+    src: "{{ assets('fonts/egg_hunter.ttf')}}" format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  .account-title {
+    font-family: 'egg_hunter', sans-serif;
+    color:#FF007E; 
+    letter-spacing: 5px; 
+  }
+  .list-group-item {
+    border: none !important;
+  }
+  
+  
+  .list-group-item.active {
+    background-color: #FF007E !important; /* color de fondo */
+    border-color: #FF007E !important;     /* borde */
+    color: white !important;              /* texto en blanco */
+  }
+  
+  
+  
+  /* TABLA*/
+  
+   /* Solo afecta a ese tr */
+    /* Cabeceras con color y tamaño normal */
+    .header-row th {
+      color: #FF007E;
+      font-size: 1rem; /* tamaño normal */
+    }
+  
+    /* Contenido de las celdas más pequeño */
+    tbody td {
+      font-size: 0.85rem; /* un poco más pequeño */
+    }
+  
+  
+  
+  
+    /* PRUEBA */
+  
+   .current-page-indicator {
+      margin-top: 4px;
+      margin-left: 30px; /* margen hacia la derecha para simular árbol */
+      font-weight: normal;
+      font-size: 0.95em;
+      color: #ffffff; /* gris oscuro suave */
+      display: flex;
+      align-items: center;
+      background: none;  /* sin fondo */
+      box-shadow: none;  /* sin sombra */
+    }
+    .current-page-indicator i {
+      margin-right: 6px;
+      font-size: 0.9em;
+      color: #ffffff; /* color gris para la flecha */
+    }
+    /* El texto del link activo sigue blanco con fondo azul */
+    #menuList li.active > a {
+      color: white !important;
+      background-color: none !important;
+    }
