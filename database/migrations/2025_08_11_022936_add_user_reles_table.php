@@ -15,10 +15,11 @@ return new class extends Migration
             $table->string('compania')->nullable();
             $table->string('pais')->nullable();
             $table->string('contacto')->nullable();
-            $table->unsignedBigInteger('WholesPrice_id')->nullable();
+            $table->unsignedBigInteger('wholesPrice_id')->nullable();
             $table->string('role')->default('cliente');
-            
-            $table->foreign('WholesPrice_id')->references('id')->on('precios')->onDelete('cascade');
+
+            $table->foreign('wholesPrice_id')->references('id')->on('precios')->onDelete('cascade');
+
         });
     }
 
@@ -28,7 +29,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropForeign(['wholesPrice_id']);
+            $table->dropColumn('wholesPrice_id');
+            $table->dropColumn(['compania', 'pais', 'contacto', 'role']);
         });
     }
 };

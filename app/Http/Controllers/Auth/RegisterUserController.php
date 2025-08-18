@@ -31,7 +31,7 @@ class RegisterUserController extends Controller
             $user = Auth::user();  // Obtenemos el usuario logueado
             
             if ($user->role == 'admin') {
-                return redirect()->route('dashboard-admin')->with('success', 'Logged in successfully!');
+                return redirect()->route('dashboard-admin.prices')->with('success', 'Logged in successfully!');
             } elseif ($user->role == 'cliente') {
                 return redirect()->intended('dashboard-client')->with('success', 'Logged in successfully!');
             }

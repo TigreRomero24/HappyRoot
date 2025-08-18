@@ -25,16 +25,16 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($productos as $index => $producto)
+      @foreach($producto as $index => $product)
       <tr>
         <td>{{ $index+1 }}</td>
-        <td><span class="badge badge-primary">{{ $producto->nombre }}</span></td>
-        <td>{{ $producto->tipo }}</td>
-        <td>{{ $producto->precio }}</td>
-        <td>{{ $producto->descripcion }}</td>
+        <td><span class="badge badge-primary">{{ $product->nombre }}</span></td>
+        <td>{{ $product->tipo }}</td>
+        <td>{{ $product->precio }}</td>
+        <td>{{ $product->descripcion }}</td>
         <td>
           <button class="btn btn-sm btn-warning" onclick="openEditModal(this)">Edit</button>
-          <form action="{{ route('dashboard-admin.products.delete', $producto->id) }}" method="POST" style="display:inline;">
+          <form action="{{ route('dashboard-admin.products.delete', $product->id) }}" method="POST" style="display:inline;">
             @csrf
             @method('DELETE')
             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Erase</button>
@@ -90,7 +90,7 @@
     <div class="modal-dialog" role="document">
       <form id="editProductForm" method="POST" action="">
         @csrf
-        @method('POST')
+        @method('PUT')
         <input type="hidden" id="editProductRealId" name="id">
         <div class="modal-content">
           <div class="modal-header">

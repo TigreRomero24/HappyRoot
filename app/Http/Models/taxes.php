@@ -4,17 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class productos extends Model
+class taxes extends Model
 {
     /* The attributes that are mass assignable.
     *
     * @var list<string>
     */
    protected $fillable = [
-       'id',
-       'nombre',
-       'tipo',
-       'descripcion',
-       'precio',
+        'destino',
+        'tipo',
+        'taxes',
+        'intercom',
+        'profit',
+        'total'
    ];
 }

@@ -1,9 +1,8 @@
 @extends('layouts.layout')
 
-@section('title', 'Home - Orders')
+@section('title', 'Home - My Account')
 
 @section('content')
-
 
 <div style="height: 30px;"></div>
 
@@ -55,9 +54,7 @@
 
   
   <div class="container-fluid col-sm-8 der rounded shadow p-3 ml-5">
-
-    
-      <!-- TABLA -->
+<!-- TABLA -->
 <div class="container">
   <h2 class="container-fluid text-center mt-4">History of orders placed</h2>
   <div class="table-responsive">
@@ -73,7 +70,9 @@
           <th class="align-middle">Departure Date</th>
           <th class="align-middle">Estimated Arrival</th>
           <th class="align-middle">Status</th>
+          <th class="align-middle">Total</th>
           <th class="align-middle">Details</th>
+          <th class="align-middle">PDF</th> <!-- NUEVA COLUMNA -->
         </tr>
       </thead>
       <tbody>
@@ -87,10 +86,16 @@
         <td>2025-08-01</td>
         <td>2025-08-15</td>
         <td>🚚 Delivered</td>
+        <td>$2,500</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
           </a>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
+            <i class="fas fa-file-pdf"></i> 
+          </button>
         </td>
       </tr>
       <tr>
@@ -103,10 +108,16 @@
         <td>2025-08-05</td>
         <td>2025-08-20</td>
         <td>⌛ In progress</td>
+        <td>$3,100</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
           </a>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
+            <i class="fas fa-file-pdf"></i> 
+          </button>
         </td>
       </tr>
       <tr>
@@ -119,10 +130,16 @@
         <td>2025-08-07</td>
         <td>2025-08-25</td>
         <td>⏰ Delayed</td>
+        <td>$4,200</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
           </a>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
+            <i class="fas fa-file-pdf"></i>
+          </button>
         </td>
       </tr>
       <tr>
@@ -135,10 +152,16 @@
         <td>2025-08-09</td>
         <td>2025-08-27</td>
         <td>❌ Canceled</td>
+        <td>$0</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
           </a>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
+            <i class="fas fa-file-pdf"></i> 
+          </button>
         </td>
       </tr>
       <tr>
@@ -151,10 +174,16 @@
         <td>2025-08-12</td>
         <td>2025-08-30</td>
         <td>🕵️‍♂️ Pending Review</td>
+        <td>$1,800</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
           </a>
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
+            <i class="fas fa-file-pdf"></i>
+          </button>
         </td>
       </tr>
     </tbody>
@@ -197,7 +226,74 @@
   </div>
 </div>
 
+<!-- jsPDF CDN (para generar el PDF en el navegador) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NA0K6C8f6nF+V+f0qK0qQ9Oqf+1k4QFf6R8b2t+vCjB5t1dOeBk3aU4e1wQm5JrE3O5IY4l3V2HfJ0rXK5B1VQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+<script>
+  // Genera PDF tomando los datos de la fila
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.download-pdf');
+    if (!btn) return;
+
+    const row = btn.closest('tr');
+    const cells = row.querySelectorAll('td');
+
+    // Índices basados en el thead de esta tabla:
+    // 0 Internal, 1 Shipment, 2 Client, 3 Origin, 4 Destination,
+    // 5 Container, 6 Departure, 7 Estimated, 8 Status, 9 Total,
+    // 10 Details (link), 11 PDF (botón)
+    const data = {
+      internal:   cells[0]?.textContent.trim() || '',
+      shipment:   cells[1]?.textContent.trim() || '',
+      client:     cells[2]?.textContent.trim() || '',
+      origin:     cells[3]?.textContent.trim() || '',
+      destination:cells[4]?.textContent.trim() || '',
+      container:  cells[5]?.textContent.trim() || '',
+      departure:  cells[6]?.textContent.trim() || '',
+      eta:        cells[7]?.textContent.trim() || '',
+      status:     cells[8]?.textContent.trim() || '',
+      total:      cells[9]?.textContent.trim() || ''
+    };
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Encabezado
+    doc.setFontSize(16);
+    doc.text('Order Summary', 14, 18);
+    doc.setFontSize(11);
+
+    let y = 30;
+    const lineGap = 8;
+
+    const lines = [
+      `N° Internal: ${data.internal}`,
+      `Shipment ID: ${data.shipment}`,
+      `Client: ${data.client}`,
+      `Origin: ${data.origin}`,
+      `Destination: ${data.destination}`,
+      `Container: ${data.container}`,
+      `Departure Date: ${data.departure}`,
+      `Estimated Arrival: ${data.eta}`,
+      `Status: ${data.status}`,
+      `Total: ${data.total}`
+    ];
+
+    lines.forEach(line => {
+      doc.text(line, 14, y);
+      y += lineGap;
+    });
+
+    // Pie con fecha/hora
+    const now = new Date();
+    doc.setFontSize(9);
+    doc.text(`Generated: ${now.toLocaleString()}`, 14, 285);
+
+    // Nombre de archivo
+    const fileName = `order_${data.internal || 'NA'}_${(data.shipment || 'NA').replace(/\s+/g,'')}.pdf`;
+    doc.save(fileName);
+  });
+</script>
 
 
 <div class="container d-flex flex-column" style="min-height: 300px;">
@@ -216,14 +312,5 @@
 </div>
 </div>
 
-
-
-
-
-
 <div style="height: 50px;"></div>
-
-      <!-- Footer -->
-
 @endsection
-

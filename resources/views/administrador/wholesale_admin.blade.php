@@ -25,24 +25,27 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Ejemplo inicial -->
+      @foreach ($clients as $index => $client)
       <tr>
-        <td>1</td>
-        <td class="userCell">jdoe</td>
-        <td class="emailCell">jdoe@example.com</td>
-        <td class="companyCell">Ejemplo S.A.</td>
-        <td class="countryCell">United States</td>
-        <td class="contactCell">+1 555 1234</td>
-        <td class="priceLevelCell">Wholesale Price 1</td>
+        <td>{{ $index+1 }}</td>
+        <td class="userCell">{{ $client->name }}</td>
+        <td class="emailCell">{{ $client->email }}</td>
+        <td class="companyCell">{{ $client->compania }}</td>
+        <td class="countryCell">{{ $client->pais }}</td>
+        <td class="contactCell">{{ $client->contacto }}</td>
+        <td class="priceLevelCell">{{ $client->wholesPrice->name ?? 'N/A' }}</td>
         <td>
           <button class="btn btn-sm btn-warning editBtn">
             <i class="fas fa-edit"></i> Edit
           </button>
-          <button class="btn btn-sm btn-danger deleteBtn">
-            <i class="fas fa-trash"></i> Delete
-          </button>
+          <form action="{{ route('dashboard-admin.delete', $client->id) }}" method="POST" style="display:inline;">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this client?')">Erase</button>
+          </form>
         </td>
       </tr>
+      @endforeach
     </tbody>
   </table>
 </div>
@@ -51,7 +54,9 @@
 <div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form id="editClientForm">
+      <form id="editClientForm" method="POST" action="{{ route('dashboard-admin.edit', 0) }}">
+        @csrf
+        @method('POST)
         <div class="modal-header">
           <h5 class="modal-title" id="editClientModalLabel">Edit User</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="outline:none;">
@@ -62,72 +67,59 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="userInput">User</label>
-              <input type="text" class="form-control" id="userInput" placeholder="Enter username" required>
+              <input type="text" class="form-control" name="name" id="userInput" placeholder="Enter username" required>
             </div>
             <div class="form-group col-md-6">
               <label for="passwordInput">Password</label>
-              <input type="password" class="form-control" id="passwordInput" placeholder="Enter password" required>
+              <input type="password" class="form-control" name="password" id="passwordInput" placeholder="Enter password" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="emailInput">Email</label>
-              <input type="email" class="form-control" id="emailInput" placeholder="Enter email" required>
+              <input type="email" class="form-control" name="email" id="emailInput" placeholder="Enter email" required>
             </div>
             <div class="form-group col-md-6">
               <label for="companyInput">Company</label>
-              <input type="text" class="form-control" id="companyInput" placeholder="Enter company name" required>
+              <input type="text" class="form-control" name="compania" id="companyInput" placeholder="Enter company name" required>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="countrySelect">Country</label>
-              <select class="form-control" id="countrySelect" required>
+              <select class="form-control" name="pais" id="countrySelect" required>
                 <option value="">Select country</option>
-                <option>United States</option>
-                <option>Canada</option>
-                <option>Mexico</option>
-                <option>Brazil</option>
-                <option>United Kingdom</option>
-                <option>Germany</option>
-                <option>France</option>
-                <option>Spain</option>
-                <option>Italy</option>
-                <option>Argentina</option>
-                <option>Colombia</option>
-                <option>Chile</option>
-                <option>Ecuador</option>
-                <option>Peru</option>
-                <option>Costa Rica</option>
+                <option value="United States">United States</option>
+                <option value="Canada">Canada</option>
+                <option value="Mexico">Mexico</option>
+                <option value="Brazil">Brazil</option>
+                <option value="United Kingdom">United Kingdom</option>
+                <option value="Germany">Germany</option>
+                <option value="France">France</option>
+                <option value="Spain">Spain</option>
+                <option value="Italy">Italy</option>
+                <option value="Argentina">Argentina</option>
+                <option value="Colombia">Colombia</option>
+                <option value="Chile">Chile</option>
+                <option value="Ecuador">Ecuador</option>
+                <option value="Peru">Peru</option>
+                <option value="Costa Rica">Costa Rica</option>
               </select>
             </div>
             <div class="form-group col-md-6">
               <label for="contactInput">Contact</label>
-              <input type="text" class="form-control" id="contactInput" placeholder="Enter contact number or name" required>
+              <input type="text" class="form-control" name="contacto" id="contactInput" placeholder="Enter contact number or name" required>
             </div>
           </div>
 
           <div class="form-group">
             <label for="priceLevelSelect">Wholesale Price</label>
-            <select class="form-control" id="priceLevelSelect" required>
-              <option value="">Select Wholesale Price</option>
-              <option>Wholesale Price 1</option>
-              <option>Wholesale Price 2</option>
-              <option>Wholesale Price 3</option>
-              <option>Distributor Price 1</option>
-              <option>Distributor Price 2</option>
-              <option>Retailer Price 1</option>
-              <option>Retailer Price 2</option>
-              <option>Corporate Price 1</option>
-              <option>Corporate Price 2</option>
-              <option>Partner Price</option>
-              <option>Reseller Price</option>
-              <option>Agent Price</option>
-              <option>Key Account Price</option>
-              <option>VIP Customer Price</option>
-              <option>Special Contract Price</option>
+            <select class="form-control" name="wholesPrice_id" id="priceLevelSelect" required>
+              @foreach ($precios as $precio)
+              <option value="{{ $precio->id }}">{{ $precio->nombre }}</option>
+              @endforeach
             </select>
           </div>
         </div>
@@ -209,7 +201,6 @@
   });
 
   editClientForm.addEventListener('submit', (e) => {
-    e.preventDefault();
 
     const user = userInput.value.trim();
     const password = passwordInput.value.trim();

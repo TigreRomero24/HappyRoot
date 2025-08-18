@@ -18,14 +18,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'nombre',
+        'name',
         'email',
         'password',
         'pais',
         'role',
-        'WholesPrice',
+        'wholesPrice_id',
         'compania',
-        'contacto',
+        'contacto'
     ];
 
     public function isAdmin(): bool
@@ -36,6 +36,11 @@ class User extends Authenticatable
     public function isCliente(): bool
     {
         return $this->role === 'cliente';
+    }
+
+    public function precios()
+    {
+        return $this->belongsTo(precio::class);
     }
 
     /**

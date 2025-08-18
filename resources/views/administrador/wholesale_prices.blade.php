@@ -3,13 +3,9 @@
 @section('title', 'Home - Wholesale Prices')
 
 @section('content')
-  
 <div class="container-fluid col-sm-8 der rounded shadow p-3 ml-5">
 
-
   <!-- TABLA -->
-  <div class="container">
-  <!-- Tabla con lista de precios -->
   <div class="container mt-4">
     <h4>Price List</h4>
     <div class="table-responsive">
@@ -30,10 +26,10 @@
             <td class="price-discount">{{ $precio->descuentos }}</td>
             <td>
               <button class="btn btn-sm btn-primary editBtn mr-2">Edit</button>
-              <form action="{{ route('dashboard-admin.prices.delete',$precio->id)}}" method="POST" style="display:inline;">
+              <form action="{{ route('dashboard-admin.prices.delete', $precio->id) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this price entry?')" >Erase</button>
+                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this price entry?')">Erase</button>
               </form>
             </td>
           </tr>
@@ -54,9 +50,9 @@
   <div class="modal fade" id="editPriceModal" tabindex="-1" aria-labelledby="editPriceModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
-        <form id="editPriceForm" method="POST" action="{{ route('dashboard-admin.prices.edit', 0) }}">
+        <form id="editPriceForm" method="POST" action="">
           @csrf
-          @method('POST')
+          <input type="hidden" name="_method" value="POST">
           <div class="modal-header">
             <h5 class="modal-title" id="editPriceModalLabel">Edit Price</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="outline:none;">
@@ -83,49 +79,50 @@
   </div>
 
   <script>
-  const priceTable = document.getElementById('priceTable');
-  const editPriceModal = $('#editPriceModal');
-  const editPriceForm = document.getElementById('editPriceForm');
-  const priceNameInput = document.getElementById('priceNameInput');
-  const discountInput = document.getElementById('discountInput');
-  const addPriceBtn = document.getElementById('addPriceBtn');
+    const priceTable = document.getElementById('priceTable');
+    const editPriceModal = $('#editPriceModal');
+    const editPriceForm = document.getElementById('editPriceForm');
+    const priceNameInput = document.getElementById('priceNameInput');
+    const discountInput = document.getElementById('discountInput');
+    const addPriceBtn = document.getElementById('addPriceBtn');
 
-  let currentEditingRow = null;
-  let editingId = null;
+    let currentEditingRow = null;
+    let editingId = null;
 
-  // Editar fila (abre modal con datos)
-  priceTable.addEventListener('click', (e) => {
-    if (e.target.classList.contains('editBtn')) {
-      currentEditingRow = e.target.closest('tr');
-      editingId = currentEditingRow.querySelector('form').action.split('/').pop();
+    // Editar fila (abre modal con datos)
+    priceTable.addEventListener('click', (e) => {
+        if (e.target.classList.contains('editBtn')) {
+            currentEditingRow = e.target.closest('tr');
+            editingId = currentEditingRow.querySelector('form').action.split('/').pop();
 
-      priceNameInput.value = currentEditingRow.querySelector('.price-name').textContent;
-      discountInput.value = currentEditingRow.querySelector('.price-discount').textContent;
+            priceNameInput.value = currentEditingRow.querySelector('.price-name').textContent.trim();
+            discountInput.value = currentEditingRow.querySelector('.price-discount').textContent.trim();
 
-      $('#editPriceModalLabel').text('Edit Price');
-      // Cambia la acción del formulario al endpoint de edición con el ID correcto
-      editPriceForm.action = `/dashboard-admin/prices/${editingId}`;
-      // Cambia el método a POST (o PUT si tu ruta lo requiere)
-      editPriceForm.querySelector('[name="_method"]').value = "POST"; // Cambia a "PUT" si usas PUT en web.php
+            $('#editPriceModalLabel').text('Edit Price');
+            // Cambia la acción del formulario al endpoint de edición con el ID correcto
+            editPriceForm.action = `/dashboard-admin/prices/${editingId}`;
+            // Cambia el método a PUT para edición
+            editPriceForm.querySelector('[name="_method"]').value = "PUT";
 
-      editPriceModal.modal('show');
-    }
-  });
+            editPriceModal.modal('show');
+        }
+    });
 
-  // Agregar precio nuevo (abre modal vacío)
-  addPriceBtn.addEventListener('click', () => {
-    currentEditingRow = null;
-    editingId = null;
-    priceNameInput.value = '';
-    discountInput.value = '';
-    $('#editPriceModalLabel').text('Add New Price');
-    editPriceForm.action = `/dashboard-admin/prices`;
-    editPriceForm.querySelector('[name="_method"]').value = "POST";
-    editPriceModal.modal('show');
-  });
+    // Agregar precio nuevo (abre modal vacío)
+    addPriceBtn.addEventListener('click', () => {
+        currentEditingRow = null;
+        editingId = null;
+        priceNameInput.value = '';
+        discountInput.value = '';
+        $('#editPriceModalLabel').text('Add New Price');
+        // Cambia la acción del formulario al endpoint de creación
+        editPriceForm.action = `/dashboard-admin/prices`;
+        editPriceForm.querySelector('[name="_method"]').value = "POST";
+        editPriceModal.modal('show');
+    });
   </script>
 
-<!-- Recuerda incluir jQuery y Bootstrap JS para que el modal funcione -->
+  <!-- Recuerda incluir jQuery y Bootstrap JS para que el modal funcione -->
 
 </div>
 
@@ -133,14 +130,6 @@
   <div class="flex-grow-1">
     <!-- Aquí va tu contenido, por ejemplo la tabla -->
   </div>
-
 </div>
-  </div>
-</div>
-</div>
-
-<div style="height: 50px;"></div>
-
-      <!-- Footer -->
 @endsection
 

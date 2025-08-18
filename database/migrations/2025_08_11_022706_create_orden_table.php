@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('fechaSalida')->nullable();
             $table->date('fechaLlegada')->nullable();
             $table->string('estado')->nullable();
+            $table->string('total')->nullable();
             $table->timestamps();
 
             $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade'); 

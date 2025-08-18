@@ -56,6 +56,7 @@
     <div class="modal-dialog" role="document">
       <form id="addTaxForm"  method="POST" action="{{ route('dashboard-admin.taxes.post') }}" autocomplete="off">
         @csrf
+        @method('POST')
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title">Add New Tax Entry</h5>
@@ -121,7 +122,7 @@
 <!-- Edit Tax Modal -->
   <div class="modal fade" id="editTaxModal" tabindex="-1" role="dialog" aria-labelledby="editTaxModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <form id="editTaxForm" method="POST" action="" autocomplete="off">
+      <form id="editTaxForm" method="POST" action="" >
         @csrf
         @method('PUT')
         <input type="hidden" id="editTaxesRealId" name="id">
