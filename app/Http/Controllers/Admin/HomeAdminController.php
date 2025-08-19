@@ -6,12 +6,13 @@ use App\Models\precio;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class HomeAdminController extends Controller
 {
     public function listClients()
     {
-        $clients = User::where('role', 'client')->with('precio')->get();
+        $clients = User::where('role', 'cliente')->with('wholesPrice')->get();
         $precios = Precio::all();
 
         return view('administrador/wholesale_admin', compact('precios', 'clients'));
@@ -19,6 +20,7 @@ class HomeAdminController extends Controller
 
     public function addClients(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'nombre' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -30,7 +32,6 @@ class HomeAdminController extends Controller
         ]);
 
         $precios = precio::all();
-
         User::create([
             'nombre' => $request->input('nombre'),
             'email' => $request->input('email'),
@@ -41,6 +42,7 @@ class HomeAdminController extends Controller
             'wholesPrice_id' => $request->input('wholesPrice_id'),
         ]);
         return redirect()->back()->with('success', 'Client added successfully.');
+
     }
 
     public function editClients(Request $request, $id)
@@ -57,6 +59,10 @@ class HomeAdminController extends Controller
 
         $client = User::findOrFail($id);
         $client->update($validated);
+        if (!empty($validated['password'])) {
+            $client->password = Hash::make($validated['password']);
+        }
+        $client->save();
         return redirect()->back()->with('success', 'Client updated successfully.');
     }
 

@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nombre',
         'email',
         'password',
         'pais',
@@ -38,9 +38,9 @@ class User extends Authenticatable
         return $this->role === 'cliente';
     }
 
-    public function precios()
+    public function wholesPrice()
     {
-        return $this->belongsTo(precio::class);
+        return $this->belongsTo(precio::class, 'wholesPrice_id');
     }
 
     /**

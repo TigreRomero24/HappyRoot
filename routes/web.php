@@ -40,7 +40,7 @@ Route::prefix('dashboard-admin')->group(function () {
     Route::delete('/products/{id}', [ProductoController::class, 'deleteProducts'])->name('dashboard-admin.products.delete');
 });
 
-Route::get('/dashboard-admin/orders', [OrderController::class, 'adminOrder'])->name('dashboard-admin.orders');
+Route::get('/dashboard-admin/orders', [OrderController::class, 'listOrders'])->name('dashboard-admin.orders');
 
 Route::prefix('dashboard-admin')->group(function () {
     Route::get('/taxes', [TaxesController::class, 'listTaxes'])->name('dashboard-admin.taxes');
@@ -52,7 +52,14 @@ Route::prefix('dashboard-admin')->group(function () {
     Route::get('/new-order', [HomeAdminController::class, 'adminNewOrder'])->name('dashboard-admin.new-order');
 });
 
-Route::get('/dashboard-client', [HomeClientController::class, 'index'])->name('dashboard-client');
-Route::get('/dashboard-client/new-order', [HomeClientController::class, 'client'])->name('dashboard-client.new-order');
-Route::get('/dashboard-client/orders', [HomeClientController::class, 'clientOrders'])->name('dashboard-client.orders');
-Route::get('/dashboard-client/profile', [HomeClientController::class, 'clientProfile'])->name('dashboard-client.profile');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/client/profile', function () {
+        return view('clientes/my_account_edit');
+    })->name('client.profile');
+    Route::put('/client/update-account', [HomeClientController::class, 'updateAccount'])->name('client.update-account');
+    Route::put('/client/update-password', [HomeClientController::class, 'updatePassword'])->name('client.update-password');
+});
+Route::get('/client', [HomeClientController::class, 'index'])->name('dashboard-client');
+Route::get('/client/new-order', [HomeClientController::class, 'client'])->name('dashboard-client.new-order');
+Route::get('/client/orders', [HomeClientController::class, 'clientOrders'])->name('dashboard-client.orders');
+Route::get('/client/profile', [HomeClientController::class, 'clientProfile'])->name('dashboard-client.profile');

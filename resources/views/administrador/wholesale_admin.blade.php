@@ -5,60 +5,60 @@
 @section('content')
 
   
-  <div class="container-fluid col-sm-8 der rounded shadow p-3 ml-5">
-<div class="container mt-4">
-  <button id="addUserBtn" class="btn btn-success mb-3">
-    <i class="fas fa-plus"></i> Add New User
-  </button>
+<div class="container-fluid col-sm-8 der rounded shadow p-3 ml-5">
+  <div class="container mt-4">
+    <button id="addUserBtn" class="btn btn-success mb-3">
+      <i class="fas fa-plus"></i> Add New User
+    </button>
 
-  <table class="table table-bordered table-hover" id="companyTable">
-    <thead class="thead-light">
-      <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Email</th>
-        <th>Company</th>
-        <th>Country</th>
-        <th>Contact</th>
-        <th>Wholesale Price</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach ($clients as $index => $client)
-      <tr>
-        <td>{{ $index+1 }}</td>
-        <td class="userCell">{{ $client->name }}</td>
-        <td class="emailCell">{{ $client->email }}</td>
-        <td class="companyCell">{{ $client->compania }}</td>
-        <td class="countryCell">{{ $client->pais }}</td>
-        <td class="contactCell">{{ $client->contacto }}</td>
-        <td class="priceLevelCell">{{ $client->wholesPrice->name ?? 'N/A' }}</td>
-        <td>
-          <button class="btn btn-sm btn-warning editBtn">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-          <form action="{{ route('dashboard-admin.delete', $client->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this client?')">Erase</button>
-          </form>
-        </td>
-      </tr>
-      @endforeach
-    </tbody>
-  </table>
+    <table class="table table-bordered table-hover" id="companyTable">
+      <thead class="thead-light">
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Company</th>
+          <th>Country</th>
+          <th>Contact</th>
+          <th>Wholesale Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($clients as $index => $client)
+        <tr data-id="{{ $client->id }}">
+          <td>{{ $index + 1 }}</td>
+          <td class="userCell">{{ $client->nombre }}</td>
+          <td class="emailCell">{{ $client->email }}</td>
+          <td class="companyCell">{{ $client->compania }}</td>
+          <td class="countryCell">{{ $client->pais }}</td>
+          <td class="contactCell">{{ $client->contacto }}</td>
+          <td class="priceLevelCell">{{ $client->wholesPrice->nombre ?? 'N/A' }}</td>
+          <td>
+            <button class="btn btn-sm btn-warning editBtn">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            <form action="{{ route('dashboard-admin.delete', $client->id) }}" method="POST" style="display:inline;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this client?')">Erase</button>
+            </form>
+          </td>
+        </tr>
+        @endforeach
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <!-- Modal para agregar/editar usuario -->
 <div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <form id="editClientForm" method="POST" action="{{ route('dashboard-admin.edit', 0) }}">
+      <form id="editClientForm" method="POST" action="">
         @csrf
-        @method('POST)
         <div class="modal-header">
-          <h5 class="modal-title" id="editClientModalLabel">Edit User</h5>
+          <h5 class="modal-title" id="editClientModalLabel">Add/Edit User</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="outline:none;">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -66,8 +66,8 @@
         <div class="modal-body">
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="userInput">User</label>
-              <input type="text" class="form-control" name="name" id="userInput" placeholder="Enter username" required>
+              <label for="nombreInput">User</label>
+              <input type="text" class="form-control" name="nombre" id="nombreInput" placeholder="Enter username" required>
             </div>
             <div class="form-group col-md-6">
               <label for="passwordInput">Password</label>
@@ -132,131 +132,54 @@
   </div>
 </div>
 
+
 <script>
-  const companyTable = document.getElementById('companyTable');
-  const addUserBtn = document.getElementById('addUserBtn');
-  const editClientModal = $('#editClientModal');
-  const editClientForm = document.getElementById('editClientForm');
+const addUserBtn = document.getElementById('addUserBtn');
+const editClientModal = $('#editClientModal');
+const editClientForm = document.getElementById('editClientForm');
 
-  // Inputs modal
-  const userInput = document.getElementById('userInput');
-  const passwordInput = document.getElementById('passwordInput');
-  const emailInput = document.getElementById('emailInput');
-  const companyInput = document.getElementById('companyInput');
-  const countrySelect = document.getElementById('countrySelect');
-  const contactInput = document.getElementById('contactInput');
-  const priceLevelSelect = document.getElementById('priceLevelSelect');
+let isAddingNew = false;
+let currentClientId = null;
 
-  let currentEditingRow = null;
-  let isAddingNew = false;
+// Abrir modal para agregar
+addUserBtn.addEventListener('click', () => {
+  isAddingNew = true;
+  currentClientId = null;
+  editClientForm.reset();
+  editClientForm.action = "{{ route('dashboard-admin.post') }}";
+  $('#editClientModalLabel').text('Add New User');
+  editClientModal.modal('show');
+});
 
-  function updateIDs() {
-    const rows = companyTable.querySelectorAll('tbody tr');
-    rows.forEach((row, index) => {
-      row.cells[0].textContent = index + 1;
+// Abrir modal para editar
+document.querySelectorAll('.editBtn').forEach(button => {
+  button.addEventListener('click', e => {
+    isAddingNew = false;
+    const row = e.target.closest('tr');
+    currentClientId = row.dataset.id;
+
+    // Llenar inputs con los valores actuales
+    document.getElementById('nombreInput').value = row.querySelector('.userCell').textContent;
+    document.getElementById('emailInput').value = row.querySelector('.emailCell').textContent;
+    document.getElementById('companyInput').value = row.querySelector('.companyCell').textContent;
+    document.getElementById('countrySelect').value = row.querySelector('.countryCell').textContent;
+    document.getElementById('contactInput').value = row.querySelector('.contactCell').textContent;
+
+    const priceValue = row.querySelector('.priceLevelCell').textContent;
+    const priceSelect = document.getElementById('priceLevelSelect');
+    Array.from(priceSelect.options).forEach(opt => {
+      opt.selected = opt.text === priceValue;
     });
-  }
 
-  addUserBtn.addEventListener('click', () => {
-    currentEditingRow = null;
-    isAddingNew = true;
-
-    // Limpiar campos
-    userInput.value = '';
-    passwordInput.value = '';
-    emailInput.value = '';
-    companyInput.value = '';
-    countrySelect.value = '';
-    contactInput.value = '';
-    priceLevelSelect.value = '';
-
-    $('#editClientModalLabel').text('Add New User');
+    editClientForm.action = `/dashboard-admin/${currentClientId}`; // PUT al backend
+    editClientForm.method = "POST";
+    editClientForm.innerHTML += '@method("PUT")';
+    $('#editClientModalLabel').text('Edit User');
     editClientModal.modal('show');
   });
+});
 
-  companyTable.addEventListener('click', (e) => {
-    if (e.target.closest('.editBtn')) {
-      currentEditingRow = e.target.closest('tr');
-      isAddingNew = false;
-
-      userInput.value = currentEditingRow.querySelector('.userCell')?.textContent || '';
-      passwordInput.value = ''; // Por seguridad no se muestra password
-      emailInput.value = currentEditingRow.querySelector('.emailCell').textContent;
-      companyInput.value = currentEditingRow.querySelector('.companyCell').textContent;
-      countrySelect.value = currentEditingRow.querySelector('.countryCell').textContent;
-      contactInput.value = currentEditingRow.querySelector('.contactCell').textContent;
-      priceLevelSelect.value = currentEditingRow.querySelector('.priceLevelCell').textContent;
-
-      $('#editClientModalLabel').text('Edit User');
-      editClientModal.modal('show');
-    }
-
-    if (e.target.closest('.deleteBtn')) {
-      if (confirm('Are you sure you want to delete this user?')) {
-        const row = e.target.closest('tr');
-        row.remove();
-        updateIDs();
-      }
-    }
-  });
-
-  editClientForm.addEventListener('submit', (e) => {
-
-    const user = userInput.value.trim();
-    const password = passwordInput.value.trim();
-    const email = emailInput.value.trim();
-    const company = companyInput.value.trim();
-    const country = countrySelect.value;
-    const contact = contactInput.value.trim();
-    const priceLevel = priceLevelSelect.value;
-
-    if (!user || !password || !email || !company || !country || !contact || !priceLevel) {
-      alert('Please fill in all fields.');
-      return;
-    }
-
-    if (isAddingNew) {
-      const tbody = companyTable.querySelector('tbody');
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td></td>
-        <td class="userCell">${user}</td>
-        <td class="emailCell">${email}</td>
-        <td class="companyCell">${company}</td>
-        <td class="countryCell">${country}</td>
-        <td class="contactCell">${contact}</td>
-        <td class="priceLevelCell">${priceLevel}</td>
-        <td>
-          <button class="btn btn-sm btn-warning editBtn">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-          <button class="btn btn-sm btn-danger deleteBtn">
-            <i class="fas fa-trash"></i> Delete
-          </button>
-        </td>
-      `;
-      tbody.appendChild(newRow);
-      updateIDs();
-    } else if (currentEditingRow) {
-      currentEditingRow.querySelector('.userCell').textContent = user;
-      // No guardamos password visible, normalmente lo manejarías en backend
-      currentEditingRow.querySelector('.emailCell').textContent = email;
-      currentEditingRow.querySelector('.companyCell').textContent = company;
-      currentEditingRow.querySelector('.countryCell').textContent = country;
-      currentEditingRow.querySelector('.contactCell').textContent = contact;
-      currentEditingRow.querySelector('.priceLevelCell').textContent = priceLevel;
-    }
-
-    editClientModal.modal('hide');
-  });
 </script>
-
-
-
-
-
-
-
 
 
 

@@ -1,55 +1,8 @@
-@extends('layouts.layout')
+@extends('layouts.layout_cliente')
 
 @section('title', 'Home - My Account')
 
 @section('content')
-
-<div style="height: 30px;"></div>
-
- <!-- Espacio de Cuerpo -->
-
-<div class="container-fluid">
-     <!-- Columna Izquierda -->
-<div class="row">
-  <div class="col-sm-3 border rounded shadow p-3 ml-5">
-    <div class="row">
-            <div class="container my-4">
-    <h1 class="container-fluid text-center account-title">Account data</h1>
-
-            <div class="row align-items-center">
-                <div class="col-auto text-center">
-                    <img src="img/empresas/logo_crfarm.png" alt="Company Logo" width="150" height="150" class="img-fluid border rounded shadow p-2">
-                </div>
-                <div class="col d-flex justify-content-between align-items-center" style="max-width: 600px;">
-                <div>
-                    <h5 class="mb-1 mt-3">Company Name: <strong>Happy Roots</strong></h5>
-                    <p class="mb-0 mt-3">Email: <a href="mailto:info@happyroots.com">info@happyroots.com</a></p>
-                    <div>
-                        <a href="login.html" class="btn btn-danger mt-2">Log Out</a>
-                    </div>
-                </div>
-                
-                </div>
-            </div>
-
-            <hr style="border: none; height: 2px; background-color: #ccc;">
-
-<div class="container my-4">
-  <ul class="list-group" id="menuList">
-    <li class="list-group-item active">
-      <i class="fas fa-shopping-cart mr-2"></i> Orders
-    </li>
-      <a href="my_account_edit.html" class="list-group-item list-group-item-action">
-        <i class="fas fa-user-edit mr-2"></i> Edit My Information
-      </a>
-    <li class="list-group-item">
-      <i class="fas fa-headset mr-2"></i> Support
-    </li>
-  </ul>
-</div>
-            </div>
-    </div>
-  </div>
 
 
   

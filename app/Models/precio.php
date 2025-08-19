@@ -15,6 +15,6 @@ class precio extends Model
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(User::class, 'wholesPrice_id');
     }
 }

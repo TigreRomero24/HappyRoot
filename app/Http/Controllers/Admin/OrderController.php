@@ -15,7 +15,7 @@ class OrderController extends Controller
 
     public function listOrders()
     {
-        $orders = orden::all();
+        $orders = orden::all()->with('');
         $products = productos::all();
         $precios = precio::all();
         $taxes = taxes::all();
@@ -26,15 +26,27 @@ class OrderController extends Controller
     public function addOrder(Request $request)
     {
         $request->validate([
-            'client_id' => 'required|exists:users,id',
-            'product_id' => 'required|exists:productos,id',
-            'quantity' => 'required|integer|min:1',
-            'shipping_address' => 'required|string|max:255',
+            'Shipment_id' => 'required|string|max:255',
+            'usuario_id' => 'nullable|exists:users,id',
+            'origen' => 'required|string|max:255',
+            'destino' => 'required|string|max:255',
+            'container' => 'required|string|max:255',
+            'fechaSalida' => 'required|date',
+            'fechaLlegada' => 'required|date',
+            'estado' => 'required|string|max:255',
+            'total' => 'required|numeric|min:0'
         ]);
 
         $order = new orden();
-        $order->client_id = $request->client_id;
-        $order->product_id = $request->product_id;
+        $order->Shipment_id = $request->Shipment_id;
+        $order->usuario_id = $request->usuario_id;
+        $order->origen = $request->origen;
+        $order->destino = $request->destino;
+        $order->container = $request->container;
+        $order->fechaSalida = $request->fechaSalida;
+        $order->fechaLlegada = $request->fechaLlegada;
+        $order->estado = $request->estado;
+        $order->total = $request->total;
         $order->quantity = $request->quantity;
         $order->shipping_address = $request->shipping_address;
         $order->save();

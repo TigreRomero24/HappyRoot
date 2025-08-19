@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('orden', function (Blueprint $table) {
             $table->id();
             $table->string('Shipment_id')->nullable();
-            $table->unsignedBigInteger('usuario_id');
-            $table->string('origen')->nullable();
+            $table->unsignedBigInteger('usuario_id')->nullable();
+            $table->string('origen')->default('Ecuador');
             $table->string('destino')->nullable();
             $table->string('container')->nullable();
             $table->date('fechaSalida')->nullable();

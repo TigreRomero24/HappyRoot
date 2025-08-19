@@ -12,7 +12,7 @@
     <!-- User -->
     <div class="form-group">
       <label for="nombre">User</label>
-      <input type="text" class="form-control" name="name" id="nombre" placeholder="Enter your username" required>
+      <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Enter your username" required>
     </div>
 
     <!-- Password -->
