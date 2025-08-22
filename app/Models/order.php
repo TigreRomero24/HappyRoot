@@ -3,15 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class orden extends Model
+
+class order extends Model
 {
-    protected $table = 'orden';
+    protected $table = 'order';
 
     protected $fillable = [
         'Shipment_id',
-        'usuario_id',
+        'new_order_id',
         'origen',
         'destino',
         'container',
@@ -26,8 +26,7 @@ class orden extends Model
     ];
 
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'usuario_id');
+    public function user(){
+        return $this->belongsTo(new_order::class, 'new_order_id');
     }
 }

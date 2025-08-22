@@ -538,3 +538,14 @@
       color: white !important;
       background-color: none !important;
     }
+
+    /*Puedes eliminarlo si deseas lo puse como extra
+    en el mensaje de alerta de editar usuario como administrador*/
+    .alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 500px;
+}

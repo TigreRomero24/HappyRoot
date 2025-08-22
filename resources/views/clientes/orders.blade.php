@@ -187,6 +187,9 @@
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.download-pdf');
     if (!btn) return;
+    else {
+      
+    }
 
     const row = btn.closest('tr');
     const cells = row.querySelectorAll('td');

@@ -24,19 +24,21 @@
           <th class="align-middle">Status</th>
           <th class="align-middle">Details</th>
           <th class="align-middle">Edit</th>
+          <th class="align-middle">PDF</th> <!-- NUEVA COLUMNA -->
         </tr>
       </thead>
       <tbody>
+        @foreach($orders as $order)
         <tr>
-          <td>001</td>
-          <td>SHIP-1001</td>
-          <td>John Doe</td>
-          <td>Ecuador</td>
-          <td>USA</td>
-          <td>CNT-2001</td>
-          <td>2025-08-01</td>
-          <td>2025-08-15</td>
-          <td>🚚 Delivered</td>
+          <td>{{ $order->internal_number }}</td>
+          <td>{{ $order->shipment_id }}</td>
+          <td>{{ $order->client_name }}</td>
+          <td>{{ $order->origin }}</td>
+          <td>{{ $order->destination }}</td>
+          <td>{{ $order->container }}</td>
+          <td>{{ $order->departure_date }}</td>
+          <td>{{ $order->estimated_arrival }}</td>
+          <td>{{ $order->status }}</td>
           <td>
             <a href="#" class="viewDetailsBtn" data-details="Detailed info about order 001...">
               <i class="fas fa-search"></i> View

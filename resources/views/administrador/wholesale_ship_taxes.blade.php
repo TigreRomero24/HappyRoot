@@ -106,8 +106,8 @@
                 <input type="number" min="0" step="0.01" pattern="\d*\.?\d*" inputmode="decimal" class="form-control" id="newProfit" name="profit" required placeholder="Enter profit">
               </div>
               <div class="form-group">
-                <label for="editTotal">Total ($)</label>
-                <input type="number" step="0.01" class="form-control" id="editTotal" name="total" readonly placeholder="Calculated automatically">
+                <label for="newTotal">Total ($)</label>
+                <input type="number" step="0.01" class="form-control" id="newTotal" name="total" readonly placeholder="Calculated automatically" readonly>
               </div>
           </div>
           <div class="modal-footer">
@@ -122,7 +122,7 @@
 <!-- Edit Tax Modal -->
   <div class="modal fade" id="editTaxModal" tabindex="-1" role="dialog" aria-labelledby="editTaxModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <form id="editTaxForm" method="POST" action="" >
+      <form id="editTaxesForm" method="POST" action="" >
         @csrf
         @method('PUT')
         <input type="hidden" id="editTaxesRealId" name="id">
@@ -180,7 +180,7 @@
             </div>
             <div class="form-group">
               <label>Total ($)</label>
-              <input type="number" step="0.01" class="form-control" id="editTotal" name="total" readonly placeholder="Calculated automatically">
+              <input type="number" step="0.01" class="form-control" id="editTotal" name="total" readonly placeholder="Calculated automatically" readonly>
             </div>
           </div>
           <div class="modal-footer">
@@ -193,36 +193,94 @@
   </div>
 
   <script>
-    // Calculate total for Add modal
-    function calculateEditTotal() {
-      const taxes = parseFloat(document.getElementById('editTaxes').value) || 0;
-      const intercom = parseFloat(document.getElementById('editIntercom').value) || 0;
-      const profit = parseFloat(document.getElementById('editProfit').value) || 0;
-      document.getElementById('editTotal').value = (taxes + intercom + profit).toFixed(2);
-    }
-    
-    // Open edit modal and fill fields
-    function openEditTaxModal(button) {
-      const row = button.closest('tr');
-      const cells = row.getElementsByTagName('td');
-      const formDelete = row.querySelector('form');
-      const taxesId = formDelete ? formDelete.action.split('/').pop() : '';
+document.addEventListener('DOMContentLoaded', function() {
+    // Referencia correcta al formulario
+    const editTaxesForm = document.getElementById('editTaxesForm');
+    const addTaxForm = document.getElementById('addTaxForm');
 
-      document.getElementById('editTaxesRealId').value = taxesId;
-      document.getElementById('editTaxId').value = cells[0].innerText;
-      document.getElementById('editDestination').value = cells[1].innerText.trim();
-      document.getElementById('editUnitType').value = cells[2].innerText.trim();
-      document.getElementById('editTaxes').value = parseFloat(cells[3].innerText);
-      document.getElementById('editIntercom').value = parseFloat(cells[4].innerText);
-      document.getElementById('editProfit').value = parseFloat(cells[5].innerText);
-      document.getElementById('editTotal').value = parseFloat(cells[6].innerText);
+    function calculateTotal(prefix) {
+        try {
+            const taxes = parseFloat(document.getElementById(prefix + 'Taxes').value) || 0;
+            const intercom = parseFloat(document.getElementById(prefix + 'Intercom').value) || 0;
+            const profit = parseFloat(document.getElementById(prefix + 'Profit').value) || 0;
+            const totalField = document.getElementById(prefix + 'Total');
 
-      document.getElementById('editTaxForm').action = `/dashboard-admin/taxes/${taxesId}`;
-      
-      $('#editTaxModal').modal('show');
+            if(totalField) {
+                totalField.value = (taxes + intercom + profit).toFixed(2);
+            } else {
+                console.error(`Total field with id ${prefix}Total not found`);
+            }
+        } catch(error) {
+            console.error('Error calculating total:', error);
+        }
     }
 
-  </script>
+    function validateNumericInput(event) {
+        const input = event.target;
+        let value = parseFloat(input.value);
+        
+        if (isNaN(value) || value < 0) {
+            input.value = 0;
+            value = 0;
+        }
+
+        // Identificar si estamos en el formulario de nuevo o edición
+        const prefix = input.id.startsWith('new') ? 'new' : 'edit';
+        calculateTotal(prefix);
+    }
+
+    // Inicializar listeners para ambos modales
+    ['new', 'edit'].forEach(prefix => {
+        ['Taxes', 'Intercom', 'Profit'].forEach(field => {
+            const input = document.getElementById(prefix + field);
+            if(input) {
+                input.addEventListener('input', () => calculateTotal(prefix));
+                input.addEventListener('change', validateNumericInput);
+            }
+        });
+    });
+
+    // Función para abrir modal de edición
+    window.openEditTaxModal = function(button) {
+        const row = button.closest('tr');
+        const cells = row.getElementsByTagName('td');
+        const formDelete = row.querySelector('form');
+        const taxesId = formDelete ? formDelete.action.split('/').pop() : '';
+
+        try {
+            // Llenar campos con validación
+            document.getElementById('editTaxesRealId').value = taxesId;
+            document.getElementById('editTaxId').value = cells[0].innerText;
+            document.getElementById('editDestination').value = cells[1].innerText.trim();
+            document.getElementById('editUnitType').value = cells[2].innerText.trim();
+            document.getElementById('editTaxes').value = parseFloat(cells[3].innerText) || 0;
+            document.getElementById('editIntercom').value = parseFloat(cells[4].innerText) || 0;
+            document.getElementById('editProfit').value = parseFloat(cells[5].innerText) || 0;
+
+            // Actualizar total
+            calculateTotal('edit');
+
+            // Actualizar action del formulario
+            if(editTaxesForm) {
+                editTaxesForm.action = `/dashboard-admin/taxes/${taxesId}`;
+            }
+
+            $('#editTaxModal').modal('show');
+        } catch(error) {
+            console.error('Error opening edit modal:', error);
+        }
+    }
+
+    // Evento para calcular total en formulario nuevo
+    if(addTaxForm) {
+        addTaxForm.addEventListener('input', function(e) {
+            if(['newTaxes', 'newIntercom', 'newProfit'].includes(e.target.id)) {
+                calculateTotal('new');
+            }
+        });
+    }
+});
+</script>
 
 </div>
 

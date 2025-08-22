@@ -20,57 +20,92 @@ class HomeAdminController extends Controller
 
     public function addClients(Request $request)
     {
-        dd($request->all());
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-            'pais' => 'required|string|max:255',
-            'compania' => 'required|string|max:255',
-            'contacto' => 'required|string|max:255',
-            'wholesPrice_id' => 'nullable|exists:precios,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'pais' => 'required|string|max:255',
+                'compania' => 'required|string|max:255',
+                'contacto' => 'required|string|max:255',
+                'wholesPrice_id' => 'nullable|exists:precios,id',
+            ]);
 
-        $precios = precio::all();
-        User::create([
-            'nombre' => $request->input('nombre'),
-            'email' => $request->input('email'),
-            'password' => Hash::make($request->input('password')),
-            'pais' => $request->input('pais'),
-            'compania' => $request->input('compania'),
-            'contacto' => $request->input('contacto'),
-            'wholesPrice_id' => $request->input('wholesPrice_id'),
-        ]);
-        return redirect()->back()->with('success', 'Client added successfully.');
+            $user = User::create([
+                'nombre' => $validated['nombre'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+                'pais' => $validated['pais'],
+                'compania' => $validated['compania'],
+                'contacto' => $validated['contacto'],
+                'wholesPrice_id' => $validated['wholesPrice_id'],
+                'role' => 'cliente',  // Agregar el role por defecto
+            ]);
 
+            return response()->json([
+                'success' => true,
+                'message' => 'Cliente agregado correctamente'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al agregar el cliente: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function editClients(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|string|min:8|confirmed',
-            'pais' => 'required|string|max:255',
-            'compania' => 'required|string|max:255',
-            'contacto' => 'required|string|max:255',
-            'wholesPrice_id' => 'nullable|exists:precios,id',
-        ]);
+        try {
+            $validated = $request->validate([
+                'nombre' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+                'password' => 'nullable|string|min:8',  // Removido 'confirmed'
+                'pais' => 'required|string|max:255',
+                'compania' => 'required|string|max:255',
+                'contacto' => 'required|string|max:255',
+                'wholesPrice_id' => 'nullable|exists:precios,id',
+            ]);
 
-        $client = User::findOrFail($id);
-        $client->update($validated);
-        if (!empty($validated['password'])) {
-            $client->password = Hash::make($validated['password']);
+            $client = User::findOrFail($id);
+            
+            // Remover password si no se proporcionó uno nuevo
+            if (empty($validated['password'])) {
+                unset($validated['password']);
+            } else {
+                $validated['password'] = Hash::make($validated['password']);
+            }
+
+            $client->update($validated);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cliente actualizado correctamente'
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al actualizar el cliente: ' . $e->getMessage()
+            ], 500);
         }
-        $client->save();
-        return redirect()->back()->with('success', 'Client updated successfully.');
     }
 
     public function deleteClients($id)
     {
         $client = User::findOrFail($id);
         $client->delete();
-        return redirect()->back()->with('success', 'Client deleted successfully.');
+        return redirect()->back()->with('success', 'Cliente eliminado correctamente');
     }
-
 }

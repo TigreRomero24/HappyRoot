@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('wholesPrice_id')->nullable();
             $table->string('role')->default('cliente');
 
-            $table->foreign('wholesPrice_id')->references('id')->on('precios')->onDelete('cascade');
+            $table->foreign('wholesPrice_id')->references('id')->on('precios')->onDelete('SET NULL');
 
         });
     }

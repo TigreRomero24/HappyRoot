@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pedidos', function (Blueprint $table) {
+        Schema::create('new_order', function (Blueprint $table) {
             $table->id();
+            $table->string('destino')->nullable();
+            $table->string('address')->nullable();
             $table->unsignedBigInteger('producto_id')->nullable();
-            $table->unsignedBigInteger('orden_id')->nullable();
+            $table->unsignedBigInteger('usuario_id')->nullable();
             $table->unsignedBigInteger('taxes_id')->nullable();
             $table->decimal('total',8,2)->nullable();
             $table->timestamps();
 
-            $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
-            $table->foreign('orden_id')->references('id')->on('orden')->onDelete('cascade');
-            $table->foreign('taxes_id')->references('id')->on('taxes')->onDelete('cascade');
+            $table->foreign('producto_id')->references('id')->on('productos')->onDelete('SET NULL');
+            $table->foreign('usuario_id')->references('id')->on('User')->onDelete('SET NULL');
+            $table->foreign('taxes_id')->references('id')->on('taxes')->onDelete('SET NULL');
         });
     }
 
@@ -30,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pedidos');
+        Schema::dropIfExists('new_order');
     }
 };

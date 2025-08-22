@@ -16,4 +16,9 @@ class productos extends Model
         'descripcion',
         'precio'
    ];
+
+   public function productOrders()
+   {
+       return $this->hasMany(new_order::class, 'producto_id');
+   }
 }

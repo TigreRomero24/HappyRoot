@@ -43,6 +43,11 @@ class User extends Authenticatable
         return $this->belongsTo(precio::class, 'wholesPrice_id');
     }
 
+    public function userOrders()
+    {
+        return $this->hasMany(new_order::class, 'usuario_id');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

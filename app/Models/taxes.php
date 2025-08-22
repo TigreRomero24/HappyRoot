@@ -18,4 +18,9 @@ class taxes extends Model
         'profit',
         'total'
    ];
+
+   public function taxesOrders()
+   {
+       return $this->hasMany(new_order::class, 'taxes_id');
+   }
 }

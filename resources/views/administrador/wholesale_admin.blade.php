@@ -57,6 +57,7 @@
     <div class="modal-content">
       <form id="editClientForm" method="POST" action="">
         @csrf
+        <input type="hidden" name="_method" value="POST">
         <div class="modal-header">
           <h5 class="modal-title" id="editClientModalLabel">Add/Edit User</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="outline:none;">
@@ -134,54 +135,174 @@
 
 
 <script>
-const addUserBtn = document.getElementById('addUserBtn');
+const companyTable = document.getElementById('companyTable');
 const editClientModal = $('#editClientModal');
 const editClientForm = document.getElementById('editClientForm');
+const addUserBtn = document.getElementById('addUserBtn');
 
-let isAddingNew = false;
-let currentClientId = null;
+let currentEditingRow = null;
+let editingId = null;
 
-// Abrir modal para agregar
+// Editar usuario (abre modal con datos)
+companyTable.addEventListener('click', (e) => {
+    if (e.target.classList.contains('editBtn')) {
+        currentEditingRow = e.target.closest('tr');
+        // Obtener ID del formulario de eliminar
+        editingId = currentEditingRow.querySelector('form').action.split('/').pop();
+
+        // Llenar campos del modal
+        document.getElementById('nombreInput').value = currentEditingRow.querySelector('.userCell').textContent.trim();
+        document.getElementById('emailInput').value = currentEditingRow.querySelector('.emailCell').textContent.trim();
+        document.getElementById('companyInput').value = currentEditingRow.querySelector('.companyCell').textContent.trim();
+        document.getElementById('countrySelect').value = currentEditingRow.querySelector('.countryCell').textContent.trim();
+        document.getElementById('contactInput').value = currentEditingRow.querySelector('.contactCell').textContent.trim();
+
+        // Manejar el select de precios
+        const priceValue = currentEditingRow.querySelector('.priceLevelCell').textContent.trim();
+        const priceSelect = document.getElementById('priceLevelSelect');
+        Array.from(priceSelect.options).forEach(opt => {
+            opt.selected = opt.text === priceValue;
+        });
+
+        // Configurar el modal para edición
+        $('#editClientModalLabel').text('Edit User');
+        editClientForm.action = `/dashboard-admin/${editingId}`;
+        editClientForm.querySelector('[name="_method"]').value = "PUT";
+        
+        // Campo de contraseña no requerido en edición
+        document.getElementById('passwordInput').required = false;
+
+        editClientModal.modal('show');
+    }
+});
+
+// Agregar usuario nuevo (abre modal vacío)
 addUserBtn.addEventListener('click', () => {
-  isAddingNew = true;
-  currentClientId = null;
-  editClientForm.reset();
-  editClientForm.action = "{{ route('dashboard-admin.post') }}";
-  $('#editClientModalLabel').text('Add New User');
-  editClientModal.modal('show');
-});
+    currentEditingRow = null;
+    editingId = null;
 
-// Abrir modal para editar
-document.querySelectorAll('.editBtn').forEach(button => {
-  button.addEventListener('click', e => {
-    isAddingNew = false;
-    const row = e.target.closest('tr');
-    currentClientId = row.dataset.id;
+    // Limpiar formulario
+    editClientForm.reset();
+    
+    // Configurar el modal para crear
+    $('#editClientModalLabel').text('Add New User');
+    editClientForm.action = '/dashboard-admin/clients';
+    editClientForm.querySelector('[name="_method"]').value = "POST";
+    
+    // Campo de contraseña requerido al crear
+    document.getElementById('passwordInput').required = true;
 
-    // Llenar inputs con los valores actuales
-    document.getElementById('nombreInput').value = row.querySelector('.userCell').textContent;
-    document.getElementById('emailInput').value = row.querySelector('.emailCell').textContent;
-    document.getElementById('companyInput').value = row.querySelector('.companyCell').textContent;
-    document.getElementById('countrySelect').value = row.querySelector('.countryCell').textContent;
-    document.getElementById('contactInput').value = row.querySelector('.contactCell').textContent;
-
-    const priceValue = row.querySelector('.priceLevelCell').textContent;
-    const priceSelect = document.getElementById('priceLevelSelect');
-    Array.from(priceSelect.options).forEach(opt => {
-      opt.selected = opt.text === priceValue;
-    });
-
-    editClientForm.action = `/dashboard-admin/${currentClientId}`; // PUT al backend
-    editClientForm.method = "POST";
-    editClientForm.innerHTML += '@method("PUT")';
-    $('#editClientModalLabel').text('Edit User');
     editClientModal.modal('show');
-  });
 });
 
+// Validación antes de enviar
+editClientForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Validación básica
+    const email = document.getElementById('emailInput').value;
+    if (!email.includes('@')) {
+        showAlert('Please enter a valid email address', 'error');
+        return;
+    }
+
+    // Preparar datos del formulario
+    const formData = new FormData(this);
+
+    // Enviar mediante AJAX
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Mostrar mensaje de éxito
+            showAlert(data.message, 'success');
+            
+            // Cerrar el modal
+            editClientModal.modal('hide');
+            
+            // Recargar la tabla después de 1 segundo
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } else {
+            // Mostrar mensaje de error
+            showAlert(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('Error al procesar la solicitud', 'error');
+        console.error('Error:', error);
+    });
+});
+
+// Función para mostrar alertas
+function showAlert(message, type) {
+    // Eliminar alertas anteriores
+    const existingAlert = document.querySelector('.alert');
+    if (existingAlert) {
+        existingAlert.remove();
+    }
+
+    // Crear nueva alerta
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show';
+    alertDiv.role = 'alert';
+    
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+
+    // Insertar alerta después del botón "Add New User"
+    const addButton = document.getElementById('addUserBtn');
+    addButton.parentNode.insertBefore(alertDiv, addButton.nextSibling);
+
+    // Eliminar la alerta después de 3 segundos
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
+
+// Agregar manejador para el botón de eliminar
+document.querySelectorAll('form[action*="delete"]').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (confirm('¿Está seguro de que desea eliminar este cliente?')) {
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    this.closest('tr').remove();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('Error al eliminar el cliente', 'error');
+                console.error('Error:', error);
+            });
+        }
+    });
+});
 </script>
-
-
 
 <div class="container d-flex flex-column" style="min-height: 300px;">
   <div class="flex-grow-1">

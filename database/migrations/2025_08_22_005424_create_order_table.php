@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orden', function (Blueprint $table) {
+        Schema::create('order', function (Blueprint $table) {
             $table->id();
             $table->string('Shipment_id')->nullable();
-            $table->unsignedBigInteger('usuario_id')->nullable();
+            $table->unsignedBigInteger('new_order_id')->nullable();
             $table->string('origen')->default('Ecuador');
             $table->string('destino')->nullable();
             $table->string('container')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('total')->nullable();
             $table->timestamps();
 
-            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('cascade'); 
+            $table->foreign('new_order_id')->references('id')->on('new_order')->onDelete('SET NULL'); 
         });
     }
 
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orden');
+        Schema::dropIfExists('order');
     }
 };

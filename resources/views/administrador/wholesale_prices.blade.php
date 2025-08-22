@@ -116,7 +116,7 @@
         discountInput.value = '';
         $('#editPriceModalLabel').text('Add New Price');
         // Cambia la acción del formulario al endpoint de creación
-        editPriceForm.action = `/dashboard-admin/prices`;
+        editPriceForm.action = '/dashboard-admin/pricestates';
         editPriceForm.querySelector('[name="_method"]').value = "POST";
         editPriceModal.modal('show');
     });
