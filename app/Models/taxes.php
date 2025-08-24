@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class taxes extends Model
+class Taxes extends Model
 {
     /* The attributes that are mass assignable.
     *
@@ -19,8 +19,8 @@ class taxes extends Model
         'total'
    ];
 
-   public function taxesOrders()
+   public function orders()
    {
-       return $this->hasMany(new_order::class, 'taxes_id');
+       return $this->hasMany(Order::class, 'taxes_id');
    }
 }

@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\productos;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
     public function listProducts()
     {
-        $producto = productos::all();
+        $producto = Producto::all();
         return view('administrador/wholesale_products', compact('producto'));
     }
 
     public function addProducts(Request $request)
     {
-        productos::create([
+        Producto::create([
             'nombre' => $request->input('nombre'),
             'tipo' => $request->input('tipo'),
             'descripcion' => $request->input('descripcion'),
@@ -34,14 +34,14 @@ class ProductoController extends Controller
             'precio' => 'required|numeric',
         ]);
 
-        $producto = productos::findOrFail($id);
+        $producto = Producto::findOrFail($id);
         $producto->update($validatated);
         return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
     public function deleteProducts($id)
     {
-        $producto = productos::findOrFail($id);
+        $producto = Producto::findOrFail($id);
         $producto->delete();
         return redirect()->back()->with('success', 'Product deleted successfully.');
     }

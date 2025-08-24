@@ -5,15 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 
-class order extends Model
+class Order extends Model
 {
-    protected $table = 'order';
-
     protected $fillable = [
         'Shipment_id',
-        'new_order_id',
-        'origen',
         'destino',
+        'address',
+        'producto_id',
+        'usuario_id',
+        'taxes_id',
+        'origen',
         'container',
         'fechaSalida',
         'fechaLlegada',
@@ -25,8 +26,19 @@ class order extends Model
         'fechaLlegada' => 'date',
     ];
 
-
-    public function user(){
-        return $this->belongsTo(new_order::class, 'new_order_id');
+    public function product()
+    {
+        return $this->belongsTo(Producto::class,'producto_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'usuario_id');
+    }
+
+    public function taxes()
+    {
+        return $this->belongsTo(Taxes::class,'taxes_id');
+    }
+
 }

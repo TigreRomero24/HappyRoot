@@ -11,18 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('new_order', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('destino')->nullable();
             $table->string('address')->nullable();
+            $table->string('Shipment_id')->unique();
+            $table->string('origen')->default('Ecuador');
+            $table->string('container')->unique();
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->unsignedBigInteger('usuario_id')->nullable();
             $table->unsignedBigInteger('taxes_id')->nullable();
+            $table->date('fechaSalida')->nullable();
+            $table->date('fechaLlegada')->nullable();
+            $table->string('estado')->default('Pendiente');
             $table->decimal('total',8,2)->nullable();
             $table->timestamps();
 
             $table->foreign('producto_id')->references('id')->on('productos')->onDelete('SET NULL');
-            $table->foreign('usuario_id')->references('id')->on('User')->onDelete('SET NULL');
+            $table->foreign('usuario_id')->references('id')->on('users')->onDelete('SET NULL');
             $table->foreign('taxes_id')->references('id')->on('taxes')->onDelete('SET NULL');
         });
     }
@@ -32,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('new_order');
+        Schema::dropIfExists('orders');
     }
 };

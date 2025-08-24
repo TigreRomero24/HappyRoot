@@ -30,15 +30,16 @@
       <tbody>
         @foreach($orders as $order)
         <tr>
-          <td>{{ $order->internal_number }}</td>
+          <td>{{ $order->id }}</td>
           <td>{{ $order->shipment_id }}</td>
-          <td>{{ $order->client_name }}</td>
-          <td>{{ $order->origin }}</td>
-          <td>{{ $order->destination }}</td>
+          <td>{{ $order->user->nombre }}</td>
+          <td>{{ $order->origen }}</td>
+          <td>{{ $order->destino }}</td>
           <td>{{ $order->container }}</td>
-          <td>{{ $order->departure_date }}</td>
-          <td>{{ $order->estimated_arrival }}</td>
+          <td>{{ $order->departure_date ?? 'N/A' }}</td>
+          <td>{{ $order->estimated_arrival ?? 'N/A' }}</td>
           <td>{{ $order->status }}</td>
+          <td>{{ $order->total }}</td>
           <td>
             <a href="#" class="viewDetailsBtn" data-details="Detailed info about order 001...">
               <i class="fas fa-search"></i> View
@@ -48,6 +49,7 @@
             <a href="#" class="editBtn"><i class="fas fa-edit"></i> Edit</a>
           </td>
         </tr>
+        @endforeach
         <!-- Más filas igual -->
       </tbody>
     </table>
@@ -56,7 +58,7 @@
 
 <div class="container mt-4">
   <div class="d-flex justify-content-end mb-3">
-    <a href="wholesale_new_order.html" class="btn btn-primary">
+    <a href="{{ route('dashboard-admin.orders.create') }}" class="btn btn-primary">
       <i class="fas fa-plus"></i> Create New Order
     </a>
   </div>

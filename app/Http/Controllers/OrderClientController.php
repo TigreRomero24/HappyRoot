@@ -1,46 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\Producto;
-use App\Models\Precio;
-use App\Models\Taxes;
-use App\Models\Order;
 use Illuminate\Http\Request;
 
-class OrderController extends Controller
+class OrderClientController extends Controller
 {
-
-    public function listOrders()
+    public function listOrdersClient()
     {
         $orders = Order::with('product', 'taxes', 'user')->latest()->get();
         $products = Producto::all();
         $precios = Precio::all();
         $taxes = Taxes::all();
         $users = User::all();
-        return view('administrador/Wholesale_orders', compact('orders', 'products', 'precios', 'taxes', 'users'));
+        return view('clientes/orders', compact('orders', 'products', 'precios', 'taxes', 'users'));
     }
 
-    public function createOrders()
+    public function createOrdersClient()
     {
         $orders = Order::with('product', 'taxes', 'user')->get();
         $products = Producto::all();
         $precios = Precio::all();
         $taxes = Taxes::all();
         $users = User::all();
-        return view('administrador/Wholesale_new_order', compact('orders', 'products', 'precios', 'taxes', 'users'));
+        return view('clientes/new_order_client', compact('orders', 'products', 'precios', 'taxes', 'users'));
     }
 
-    public function buscarClientes(Request $request)
-    {
-        $clientes = User::where('nombre', 'LIKE', '%' . $request->input('q') . '%')->select('id', 'nombre')->get();
-
-        return response()->json($clientes);
-    }
-
-    public function addOrder(Request $request)
+    public function addOrderClient(Request $request)
     {
 
         $userId = auth()->user()->isAdmin()
@@ -75,24 +61,7 @@ class OrderController extends Controller
             'total' => $subtotal,
         ]);
 
-        return redirect()->route('dashboard-admin.orders')->with('success', 'Order added successfully.');
+        return redirect()->route('dashboard-client')->with('success', 'Order added successfully.');
     }
 
-
-    public function editOrder(Request $request, $id)
-    {
-        $orders = Order::findOrFail($id);
-        $products = Producto::all();
-        $taxes = Taxes::all();
-        $users = User::all();
-        $precios = Precio::all();
-        return view('dashboard-admin.orders', compact('orders', 'products', 'taxes', 'users', 'precios'));
-    }
-
-    public function deleteOrder($id)
-    {
-        $order = Order::findOrFail($id);
-        $order->delete();
-        return redirect()->route('dashboard-admin.orders')->with('success', 'Order deleted successfully.');
-    }
 }

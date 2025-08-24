@@ -29,17 +29,18 @@
         </tr>
       </thead>
       <tbody>
+      @foreach ($orders as $order)
       <tr>
-        <td>001</td>
-        <td>SHIP-1001</td>
-        <td>John Doe</td>
-        <td>Ecuador</td>
-        <td>USA</td>
-        <td>CNT-2001</td>
-        <td>2025-08-01</td>
-        <td>2025-08-15</td>
-        <td>🚚 Delivered</td>
-        <td>$2,500</td>
+        <td>{{ $order->id }}</td>
+        <td>{{ $order->shipment_id }}</td>
+        <td>{{ $order->user->nombre }}</td>
+        <td>{{ $order->origen }}</td>
+        <td>{{ $order->destino }}</td>
+        <td>{{ $order->container }}</td>
+        <td>{{ $order->departure_date ?? 'N/A' }}</td>
+        <td>{{ $order->estimated_arrival ?? 'N/A' }}</td>
+        <td>{{ $order->status }}</td>
+        <td>{{ $order->total }}</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
@@ -51,96 +52,17 @@
           </button>
         </td>
       </tr>
-      <tr>
-        <td>002</td>
-        <td>SHIP-1002</td>
-        <td>Mary Smith</td>
-        <td>Costa Rica</td>
-        <td>Spain</td>
-        <td>CNT-2002</td>
-        <td>2025-08-05</td>
-        <td>2025-08-20</td>
-        <td>⌛ In progress</td>
-        <td>$3,100</td>
-        <td>
-          <a href="#" data-toggle="modal" data-target="#detailsModal">
-            <i class="fas fa-search"></i> View
-          </a>
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
-            <i class="fas fa-file-pdf"></i> 
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>003</td>
-        <td>SHIP-1003</td>
-        <td>Mike Johnson</td>
-        <td>Peru</td>
-        <td>Germany</td>
-        <td>CNT-2003</td>
-        <td>2025-08-07</td>
-        <td>2025-08-25</td>
-        <td>⏰ Delayed</td>
-        <td>$4,200</td>
-        <td>
-          <a href="#" data-toggle="modal" data-target="#detailsModal">
-            <i class="fas fa-search"></i> View
-          </a>
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
-            <i class="fas fa-file-pdf"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>004</td>
-        <td>SHIP-1004</td>
-        <td>Sarah Lee</td>
-        <td>Mexico</td>
-        <td>UK</td>
-        <td>CNT-2004</td>
-        <td>2025-08-09</td>
-        <td>2025-08-27</td>
-        <td>❌ Canceled</td>
-        <td>$0</td>
-        <td>
-          <a href="#" data-toggle="modal" data-target="#detailsModal">
-            <i class="fas fa-search"></i> View
-          </a>
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
-            <i class="fas fa-file-pdf"></i> 
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td>005</td>
-        <td>SHIP-1005</td>
-        <td>David Brown</td>
-        <td>Brazil</td>
-        <td>France</td>
-        <td>CNT-2005</td>
-        <td>2025-08-12</td>
-        <td>2025-08-30</td>
-        <td>🕵️‍♂️ Pending Review</td>
-        <td>$1,800</td>
-        <td>
-          <a href="#" data-toggle="modal" data-target="#detailsModal">
-            <i class="fas fa-search"></i> View
-          </a>
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-danger btn-sm download-pdf">
-            <i class="fas fa-file-pdf"></i>
-          </button>
-        </td>
-      </tr>
+      @endforeach
     </tbody>
   </table>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <div class="d-flex justify-content-end mb-3">
+    <a href="{{ route('dashboard-client.new-order') }}" class="btn btn-primary">
+      <i class="fas fa-plus"></i> Create New Order
+    </a>
   </div>
 </div>
 

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class productos extends Model
+class Producto extends Model
 {
     /* The attributes that are mass assignable.
     *
@@ -17,8 +17,8 @@ class productos extends Model
         'precio'
    ];
 
-   public function productOrders()
+   public function orders()
    {
-       return $this->hasMany(new_order::class, 'producto_id');
+       return $this->hasMany(Order::class, 'producto_id');
    }
 }

@@ -40,12 +40,12 @@ class User extends Authenticatable
 
     public function wholesPrice()
     {
-        return $this->belongsTo(precio::class, 'wholesPrice_id');
+        return $this->belongsTo(Precio::class, 'wholesPrice_id');
     }
 
-    public function userOrders()
+    public function orders()
     {
-        return $this->hasMany(new_order::class, 'usuario_id');
+        return $this->hasMany(Order::class, 'usuario_id');
     }
 
     /**

@@ -117,7 +117,8 @@
 
           <div class="form-group">
             <label for="priceLevelSelect">Wholesale Price</label>
-            <select class="form-control" name="wholesPrice_id" id="priceLevelSelect" required>
+            <select class="form-control" name="wholesPrice_id" id="priceLevelSelect">
+              <option value="">Select price level</option>
               @foreach ($precios as $precio)
               <option value="{{ $precio->id }}">{{ $precio->nombre }}</option>
               @endforeach
@@ -199,7 +200,6 @@ addUserBtn.addEventListener('click', () => {
 editClientForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Validación básica
     const email = document.getElementById('emailInput').value;
     if (!email.includes('@')) {
         showAlert('Please enter a valid email address', 'error');
@@ -209,7 +209,6 @@ editClientForm.addEventListener('submit', function(e) {
     // Preparar datos del formulario
     const formData = new FormData(this);
 
-    // Enviar mediante AJAX
     fetch(this.action, {
         method: 'POST',
         body: formData,
@@ -220,18 +219,12 @@ editClientForm.addEventListener('submit', function(e) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Mostrar mensaje de éxito
             showAlert(data.message, 'success');
-            
-            // Cerrar el modal
             editClientModal.modal('hide');
-            
-            // Recargar la tabla después de 1 segundo
             setTimeout(() => {
                 window.location.reload();
             }, 1000);
         } else {
-            // Mostrar mensaje de error
             showAlert(data.message, 'error');
         }
     })
@@ -240,16 +233,11 @@ editClientForm.addEventListener('submit', function(e) {
         console.error('Error:', error);
     });
 });
-
-// Función para mostrar alertas
 function showAlert(message, type) {
-    // Eliminar alertas anteriores
     const existingAlert = document.querySelector('.alert');
     if (existingAlert) {
         existingAlert.remove();
     }
-
-    // Crear nueva alerta
     const alertDiv = document.createElement('div');
     alertDiv.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger') + ' alert-dismissible fade show';
     alertDiv.role = 'alert';
@@ -260,12 +248,8 @@ function showAlert(message, type) {
             <span aria-hidden="true">&times;</span>
         </button>
     `;
-
-    // Insertar alerta después del botón "Add New User"
     const addButton = document.getElementById('addUserBtn');
     addButton.parentNode.insertBefore(alertDiv, addButton.nextSibling);
-
-    // Eliminar la alerta después de 3 segundos
     setTimeout(() => {
         alertDiv.remove();
     }, 3000);

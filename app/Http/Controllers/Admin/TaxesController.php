@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\taxes;
+use App\Models\Taxes;
 use Illuminate\Http\Request;
 
 class TaxesController extends Controller
 {
     public function listTaxes()
     {
-        $taxes = taxes::all();
+        $taxes = Taxes::all();
         return view('administrador/wholesale_ship_taxes', compact('taxes'));
     }
 
     public function addTaxes(Request $request)
     {
-        taxes::create([
+        Taxes::create([
             'destino' => $request->input('destino'),
             'tipo' => $request->input('tipo'),
             'taxes' => $request->input('taxes'),
@@ -38,14 +38,14 @@ class TaxesController extends Controller
             'total' => 'required|numeric',
         ]);
 
-        $tax = taxes::findOrFail($id);
+        $tax = Taxes::findOrFail($id);
         $tax->update($validated);
         return redirect()->back()->with('success', 'Tax updated successfully.');
     }
 
     public function deleteTaxes($id)
     {
-        $tax = taxes::findOrFail($id);
+        $tax = Taxes::findOrFail($id);
         $tax->delete();
         return redirect()->back()->with('success', 'Tax deleted successfully.');
     }

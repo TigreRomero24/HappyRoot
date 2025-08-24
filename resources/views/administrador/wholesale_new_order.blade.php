@@ -4,7 +4,6 @@
 
 @section('content')
 
-  
   <div class="container-fluid col-sm-8 der rounded shadow p-3 ml-5">
 
 
@@ -22,12 +21,20 @@
       <div class="form-group">
         <label for="searchClient"><strong>Search Client</strong></label>
         <div class="input-group">
-          <input type="text" id="searchClient" class="form-control" placeholder="Enter client name">
-          <div class="input-group-append">
-            <button class="btn btn-primary" type="button">
-              <i class="fas fa-search"></i> Search
-            </button>
+          <div style="position: relative; width: 300px;">
+            <input type="text" id="buscarCliente" placeholder="Buscar cliente..." 
+              style="width: 100%; padding: 8px;">
+            <input type="hidden" id="cliente_id" name="usuario_id">
+              <!-- Menú desplegable -->
+              <ul id="sugerencias" 
+                  style="position: absolute; top: 100%; left: 0; right: 0; 
+                        background: white; border: 1px solid #ccc; 
+                        border-top: none; list-style: none; 
+                        margin: 0; padding: 0; max-height: 200px; 
+                        overflow-y: auto; display: none; z-index: 1000;">
+              </ul>
           </div>
+          
         </div>
       </div>
 
@@ -123,7 +130,7 @@
       <div class="form-group">
         <label for="productSelect"><strong>Select Product</strong></label>
         <select id="productSelect" class="form-control" name="producto_id">
-          @foreach($productos as $producto)
+          @foreach($products as $producto)
           <option value="{{ $producto->id }}">{{ $producto->nombre }}</option>
           @endforeach
         </select>
@@ -177,6 +184,49 @@
 </div>
 
 <script>
+  const input = document.getElementById('buscarCliente');
+  const sugerencias = document.getElementById('sugerencias');
+
+  input.addEventListener('keyup', function() {
+      let query = this.value;
+
+      if(query.length > 2){ 
+          fetch(`/dashboard-admin/buscarclientes?q=${query}`)
+              .then(res => res.json())
+              .then(data => {
+                  sugerencias.innerHTML = '';
+                  if (data.length > 0) {
+                      sugerencias.style.display = 'block';
+                      data.forEach(cliente => {
+                          let li = document.createElement('li');
+                          li.textContent = cliente.nombre;
+                          li.style.padding = "8px";
+                          li.style.cursor = "pointer";
+                          
+                          // Seleccionar sugerencia
+                          li.addEventListener('click', function() {
+                              input.value = cliente.nombre; 
+                              sugerencias.style.display = 'none';
+                              
+                              // Guardamos el ID del cliente en un hidden input (si lo necesitas)
+                              document.getElementById('cliente_id').value = cliente.id;
+                          });
+
+                          // Hover efecto
+                          li.addEventListener('mouseover', () => li.style.background = "#f0f0f0");
+                          li.addEventListener('mouseout', () => li.style.background = "white");
+
+                          sugerencias.appendChild(li);
+                      });
+                  } else {
+                      sugerencias.style.display = 'none';
+                  }
+              });
+      } else {
+          sugerencias.style.display = 'none';
+      }
+  });
+
   const prices = {
     pallets: 150,
     boxes: 20,

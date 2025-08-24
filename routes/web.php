@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\TaxesController;
 use App\Http\Controllers\HomeClientController;
+use App\Http\Controllers\OrderClientController;
 use App\Http\Controllers\Admin\PrecioController;
 use App\Http\Controllers\GenerarpdfController;
 
@@ -43,7 +44,9 @@ Route::prefix('dashboard-admin')->group(function () {
 
 Route::prefix('dashboard-admin')->group(function () {
     Route::get('/orders', [OrderController::class, 'listOrders'])->name('dashboard-admin.orders');
+    Route::get('/orders/create', [OrderController::class, 'createOrders'])->name('dashboard-admin.orders.create');
     Route::post('/orderst', [OrderController::class, 'addOrders'])->name('dashboard-admin.orders.post');
+    Route::get('/buscarclientes', [OrderController::class, 'buscarClientes']);
     Route::get('/orders/{id}/pdf', [GenerarpdfController::class, 'generatePdf'])->name('dashboard-admin.orders.pdf');
 });
 
@@ -64,7 +67,9 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/client/update-account', [HomeClientController::class, 'updateAccount'])->name('client.update-account');
     Route::put('/client/update-password', [HomeClientController::class, 'updatePassword'])->name('client.update-password');
 });
-Route::get('/client', [HomeClientController::class, 'index'])->name('dashboard-client');
-Route::get('/client/new-order', [HomeClientController::class, 'client'])->name('dashboard-client.new-order');
-Route::get('/client/orders', [HomeClientController::class, 'clientOrders'])->name('dashboard-client.orders');
-Route::get('/client/profile', [HomeClientController::class, 'clientProfile'])->name('dashboard-client.profile');
+Route::prefix('client')->group(function () {
+    Route::get('/', [OrderClientController::class, 'listOrdersClient'])->name('dashboard-client');
+    Route::get('/new-order', [OrderClientController::class, 'createOrdersClient'])->name('dashboard-client.new-order');
+    Route::get('/orders/{id}/pdf', [GenerarpdfController::class, 'generatePdf'])->name('dashboard-client.orders.pdf');
+    Route::post('/addorders', [OrderClientController::class, 'addOrderClient'])->name('dashboard-client.orders');
+});

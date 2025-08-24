@@ -39,7 +39,7 @@ class HomeAdminController extends Controller
                 'compania' => $validated['compania'],
                 'contacto' => $validated['contacto'],
                 'wholesPrice_id' => $validated['wholesPrice_id'],
-                'role' => 'cliente',  // Agregar el role por defecto
+                'role' => 'cliente', 
             ]);
 
             return response()->json([
@@ -66,11 +66,11 @@ class HomeAdminController extends Controller
             $validated = $request->validate([
                 'nombre' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users,email,' . $id,
-                'password' => 'nullable|string|min:8',  // Removido 'confirmed'
+                'password' => 'nullable|string|min:8', 
                 'pais' => 'required|string|max:255',
                 'compania' => 'required|string|max:255',
                 'contacto' => 'required|string|max:255',
-                'wholesPrice_id' => 'nullable|exists:precios,id',
+                'wholesPrice_id' => 'nullable',
             ]);
 
             $client = User::findOrFail($id);
