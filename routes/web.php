@@ -45,7 +45,11 @@ Route::prefix('dashboard-admin')->group(function () {
 Route::prefix('dashboard-admin')->group(function () {
     Route::get('/orders', [OrderController::class, 'listOrders'])->name('dashboard-admin.orders');
     Route::get('/orders/create', [OrderController::class, 'createOrders'])->name('dashboard-admin.orders.create');
-    Route::post('/orderst', [OrderController::class, 'addOrders'])->name('dashboard-admin.orders.post');
+    Route::post('/calcular-totales', [OrderController::class, 'calcularTotales'])->name('orders.calcular');
+    Route::post('/orderst', [OrderController::class, 'addOrder'])->name('dashboard-admin.orders.post');
+    Route::post('/orders/edit/{id}',[OrderController::class, 'editOrder'])->name('dashboard-admin.orders.edit');
+    Route::put('/orders/{id}', [OrderController::class, 'updateOrder'])->name('dashboard-admin.orders.update');
+    Route::get('/orders/{id}/details', [OrderController::class, 'getOrderDetails'])->name('dashboard-admin.orders.details');
     Route::get('/buscarclientes', [OrderController::class, 'buscarClientes']);
     Route::get('/orders/{id}/pdf', [GenerarpdfController::class, 'generatePdf'])->name('dashboard-admin.orders.pdf');
 });
@@ -55,21 +59,19 @@ Route::prefix('dashboard-admin')->group(function () {
     Route::post('/taxestates', [TaxesController::class, 'addTaxes'])->name('dashboard-admin.taxes.post');
     Route::put('/taxes/{id}', [TaxesController::class, 'editTaxes'])->name('dashboard-admin.taxes.edit');
     Route::delete('/taxes/{id}', [TaxesController::class, 'deleteTaxes'])->name('dashboard-admin.taxes.delete');
-
-    Route::get('/clients', [HomeAdminController::class, 'adminClient'])->name('dashboard-admin.clients');
-    Route::get('/new-order', [HomeAdminController::class, 'adminNewOrder'])->name('dashboard-admin.new-order');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/client/profile', function () {
-        return view('clientes/my_account_edit');
-    })->name('client.profile');
+    Route::get('/client/profile', [HomeClientController::class, 'client'])->name('client.profile');
     Route::put('/client/update-account', [HomeClientController::class, 'updateAccount'])->name('client.update-account');
     Route::put('/client/update-password', [HomeClientController::class, 'updatePassword'])->name('client.update-password');
+
+    Route::get('/orders', [OrderClientController::class, 'listOrdersClient'])->name('client.orders');
+    Route::post('/ordesCalcular', [OrderClientController::class, 'calcularTotalesclient'])->name('calcular.totales.client');
+    Route::get('/orders/create', [OrderClientController::class, 'createOrdersClient'])->name('client.orders.create');
+    Route::get('/orders/{id}', [OrderClientController::class, 'detailOrden'])->name('client.detail_order');
+
+    Route::get('/orders/{id}/pdf', [GenerarpdfController::class, 'generatePdf'])->name('client.orders.pdf');
 });
-Route::prefix('client')->group(function () {
-    Route::get('/', [OrderClientController::class, 'listOrdersClient'])->name('dashboard-client');
-    Route::get('/new-order', [OrderClientController::class, 'createOrdersClient'])->name('dashboard-client.new-order');
-    Route::get('/orders/{id}/pdf', [GenerarpdfController::class, 'generatePdf'])->name('dashboard-client.orders.pdf');
-    Route::post('/addorders', [OrderClientController::class, 'addOrderClient'])->name('dashboard-client.orders');
-});
+
+

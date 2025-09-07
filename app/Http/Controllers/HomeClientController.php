@@ -15,7 +15,7 @@ class HomeClientController extends Controller
 
     public function client()
     {
-        return view('clientes/new_order_client');
+        return view('clientes/my_account_edit');
     }
 
     public function updateAccount(Request $request)

@@ -18,8 +18,8 @@
       <tr>
         <th>Product ID</th>
         <th>Product Name</th>
-        <th>Unit Type</th>
-        <th>Price</th>
+        <th>Price Pallets</th>
+        <th>Price Boxes</th>
         <th>Product Details</th>
         <th>Actions</th>
       </tr>
@@ -29,8 +29,8 @@
       <tr>
         <td>{{ $index+1 }}</td>
         <td><span class="badge badge-primary">{{ $product->nombre }}</span></td>
-        <td>{{ $product->tipo }}</td>
-        <td>{{ $product->precio }}</td>
+        <td>{{ $product->precio_pallets }}</td>
+        <td>{{ $product->precio_boxes }}</td>
         <td>{{ $product->descripcion }}</td>
         <td>
           <button class="btn btn-sm btn-warning" onclick="openEditModal(this)">Edit</button>
@@ -61,20 +61,16 @@
               <input type="text" class="form-control" name="nombre" required>
             </div>
             <div class="form-group">
-              <label>Unit Type</label>
-              <select class="form-control" name="tipo" required>
-                <option value="">-- Select Unit Type --</option>
-                <option value="Pallets">Pallets</option>
-                <option value="Boxes">Boxes</option>
-              </select>
+              <label>Price Pallets</label>
+              <input type="number" step="0.01" class="form-control" name="precio_pallets" required>
             </div>
             <div class="form-group">
-              <label>Price</label>
-              <input type="number" step="0.01" class="form-control" name="precio" required>
+              <label>Price Boxes</label>
+              <input type="number" step="0.01" class="form-control" name="precio_boxes" required>
             </div>
             <div class="form-group">
               <label>Product Details</label>
-              <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+              <textarea class="form-control" name="descripcion" rows="4" required></textarea>
             </div>
           </div>
           <div class="modal-footer">
@@ -107,20 +103,16 @@
               <input type="text" class="form-control" id="editProductName" name="nombre" required>
             </div>
             <div class="form-group">
-              <label>Unit Type</label>
-              <select class="form-control" id="editUnitType" name="tipo" required>
-                <option value="">-- Select Unit Type --</option>
-                <option value="Pallets">Pallets</option>
-                <option value="Boxes">Boxes</option>
-              </select>
+              <label>Price Pallets</label>
+              <input type="number" step="0.01" class="form-control" name="precio_pallets" id="editPricePallets" required>
             </div>
             <div class="form-group">
-              <label>Price</label>
-              <input type="number" step="0.01" class="form-control" name="precio" id="editPrice" required>
+              <label>Price Boxes</label>
+              <input type="number" step="0.01" class="form-control" name="precio_boxes" id="editPriceBoxes" required>
             </div>
             <div class="form-group">
               <label>Product Details</label>
-              <textarea class="form-control" id="editProductDetails" name="descripcion" rows="3" required></textarea>
+              <textarea class="form-control" id="editProductDetails" name="descripcion" rows="4" required></textarea>
             </div>
           </div>
           <div class="modal-footer">
@@ -143,9 +135,9 @@
       document.getElementById('editProductRealId').value = productId;
       document.getElementById('editProductId').value = cells[0].innerText;
       document.getElementById('editProductName').value = cells[1].innerText.trim();
-      document.getElementById('editUnitType').value = cells[2].innerText.trim();
-      document.getElementById('editPrice').value = parseFloat(cells[3].innerText);
-      document.getElementById('editProductDetails').value = cells[4].innerText;
+      document.getElementById('editPricePallets').value = parseFloat(cells[2].innerText);
+      document.getElementById('editPriceBoxes').value = parseFloat(cells[3].innerText);
+      document.getElementById('editProductDetails').value = cells[4].innerText.trim();
 
       // Actualiza la acción del formulario para el producto correcto
       document.getElementById('editProductForm').action = `/dashboard-admin/products/${productId}`;

@@ -39,7 +39,7 @@
 
       <!-- Columna 3: My Account -->
       <div class="col-md-3 text-center text-md-right mt-3 mt-md-0">
-        <a href="{{ route('dashboard-client.profile')}}" class="text-decoration-none d-inline-flex align-items-center justify-content-center my-account-link">
+        <a href="{{ route('client.profile')}}" class="text-decoration-none d-inline-flex align-items-center justify-content-center my-account-link">
           <img src="{{ asset('img/login_ico.png')}}" alt="login icon" style="width: 30px; height: 30px;" class="mr-2">
           <span style="font-size: 20px; color: white; letter-spacing: 3px;">my account</span>
         </a>
@@ -99,16 +99,16 @@
 
 <div class="container my-4">
   <ul class="list-group" id="menuList">
-    <li class="list-group-item {{ Route::is('') ? 'active' : ''}}">
-      <i href="orders.html" class="fas fa-shopping-cart mr-2"></i> Orders
-            <!-- Indicador justo debajo de Orders -->
-      <div class="current-page-indicator">
-        <i class="fas fa-arrow-right"></i> New Order
-      </div>
+    <li class="list-group-item {{ Route::is('client.orders') ? 'active' : ''}}">
+    <a href="{{ route('client.orders') }}" class="text-dark text-decoration-none">
+        <i class="fas fa-shopping-cart mr-2"></i> Orders
+      </a>
     </li>
-      <a href="{{ route('client.profile') }}" class="list-group-item {{ Route::is('client.profile') ? 'active' : ''}}">
+    <li class="list-group-item {{ Route::is('client.profile') ? 'active' : ''}}">
+      <a href="{{ route('client.profile') }}" class="text-dark text-decoration-none">
         <i class="fas fa-user-edit mr-2"></i> Edit My Information
       </a>
+    </li>
     <div   class="list-group-item">
       <i class="fas fa-headset mr-2"></i> Support
     </li>

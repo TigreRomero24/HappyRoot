@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'Shipment_id',
+        'shipment_id',
         'destino',
         'address',
         'producto_id',
@@ -19,7 +19,9 @@ class Order extends Model
         'fechaSalida',
         'fechaLlegada',
         'estado',
-        'total'
+        'total',
+        'cantidad',
+        'tipo'
     ];
     protected $casts = [
         'fechaSalida' => 'date',

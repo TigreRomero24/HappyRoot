@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('destino')->nullable();
             $table->string('address')->nullable();
-            $table->string('Shipment_id')->unique();
+            $table->string('shipment_id')->unique();
             $table->string('origen')->default('Ecuador');
             $table->string('container')->unique();
             $table->unsignedBigInteger('producto_id')->nullable();

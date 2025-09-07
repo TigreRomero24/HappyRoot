@@ -39,9 +39,9 @@
 
       <!-- Columna 3: My Account -->
       <div class="col-md-3 text-center text-md-right mt-3 mt-md-0">
-        <a href="#" class="text-decoration-none d-inline-flex align-items-center justify-content-center my-account-link">
+        <a href="{{ route('logout')}}" class="text-decoration-none d-inline-flex align-items-center justify-content-center my-account-link">
           <img src="{{ asset('img/login_ico.png')}}" alt="login icon" style="width: 30px; height: 30px;" class="mr-2">
-          <span style="font-size: 20px; color: white; letter-spacing: 3px;">my account</span>
+          <span style="font-size: 20px; color: white; letter-spacing: 3px;" >Log Out</span>
         </a>
       </div>
 
@@ -90,7 +90,7 @@
       </a>
     </li>
     <li class="list-group-item {{ Route::is('dashboard-admin.orders') ? 'active' : '' }}">
-      <a href="{{ route('dashboard-admin.orders') }}" class="text-dark text-decoration-none">
+      <a href="{{ route('dashboard-admin.orders')}}" class="text-dark text-decoration-none">
         <i class="fas fa-receipt mr-2"></i> Orders
       </a>
     </li>

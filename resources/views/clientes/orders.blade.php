@@ -33,14 +33,14 @@
       <tr>
         <td>{{ $order->id }}</td>
         <td>{{ $order->shipment_id }}</td>
-        <td>{{ $order->user->nombre }}</td>
-        <td>{{ $order->origen }}</td>
+        <td>{{ $order->user->nombre ?? 'N/A' }}</td>
+        <td>{{ $order->origen ?? 'N/A' }}</td>
         <td>{{ $order->destino }}</td>
         <td>{{ $order->container }}</td>
-        <td>{{ $order->departure_date ?? 'N/A' }}</td>
-        <td>{{ $order->estimated_arrival ?? 'N/A' }}</td>
-        <td>{{ $order->status }}</td>
-        <td>{{ $order->total }}</td>
+        <td>{{ $order->fechaSalida ? $order->fechaSalida->format('Y-m-d') : 'N/A' }}</td>
+        <td>{{ $order->fechaLlegada ? $order->fechaLlegada->format('Y-m-d') : 'N/A' }}</td>
+        <td>{{ $order->estado ?? 'Pending' }}</td>
+        <td>${{ number_format($order->total, 2) }}</td>
         <td>
           <a href="#" data-toggle="modal" data-target="#detailsModal">
             <i class="fas fa-search"></i> View
@@ -60,7 +60,7 @@
 
 <div class="container mt-4">
   <div class="d-flex justify-content-end mb-3">
-    <a href="{{ route('dashboard-client.new-order') }}" class="btn btn-primary">
+    <a href="{{ route('client.orders.create') }}" class="btn btn-primary">
       <i class="fas fa-plus"></i> Create New Order
     </a>
   </div>
@@ -77,25 +77,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>
-          Shipment place / Puerto de embarque: APM, MOIN LIMON CR
-          Arrival Port / Puerto de arribo: Rotterdam Origin country / País de origen :COSTA RICA
-          Arrival country / País de destino :Rotterdam, Netherlands
-          Departure :12 agosto 2025
-          Arrival :25 agosto 2025
-          Shipping Company / Naviera:MEDITERRANEAN SHIPPING
-          Vessel and Voyage / Vapor :MSC VAISHNAVI R / NN531R
-          Bill of Lading:SEA25NLRTM1796
-          #FDA 15798849296
-          PAYMENT TERMS:
-          30% On Invoice Date 08/05/2025
-          20% Of The Invoice On Arrival At The Port 08/25/2025
-          50% Of The Invoice On Arrival At The Client's Warehouse 08/29/2025
-          BROKER: Fresh Connection
-          operations@freshconnection.nl
-          31*(0)*180799400
-          Trondheim 11-15, Unit 2B3, 2993LE Barendrecht
-        </p>
+        <p><strong>ID:</strong> <span id="detalle-id"></span></p>
+        <p><strong>Producto:</strong> <span id="detalle-producto"></span></p>
+        <p><strong>Precio:</strong> <span id="detalle-precio"></span></p>
+        <p><strong>Impuesto:</strong> <span id="detalle-impuesto"></span></p>
+        <p><strong>Estado:</strong> <span id="detalle-estado"></span></p>
+        <p><strong>Fecha:</strong> <span id="detalle-fecha"></span></p>
       </div>
     </div>
   </div>
@@ -103,6 +90,45 @@
 
 <!-- jsPDF CDN (para generar el PDF en el navegador) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" integrity="sha512-NA0K6C8f6nF+V+f0qK0qQ9Oqf+1k4QFf6R8b2t+vCjB5t1dOeBk3aU4e1wQm5JrE3O5IY4l3V2HfJ0rXK5B1VQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Obtener todos los botones de detalles
+    const botones = document.querySelectorAll('a[data-toggle="modal"]');
+
+    botones.forEach(boton => {
+        boton.addEventListener("click", function (e) {
+            e.preventDefault();
+            const row = this.closest('tr');
+            const cells = row.querySelectorAll('td');
+            
+            // Extraer datos de la fila
+            const orderData = {
+                id: cells[0].textContent.trim(),
+                shipment_id: cells[1].textContent.trim(),
+                client: cells[2].textContent.trim(),
+                origin: cells[3].textContent.trim(),
+                destination: cells[4].textContent.trim(),
+                container: cells[5].textContent.trim(),
+                departure: cells[6].textContent.trim(),
+                arrival: cells[7].textContent.trim(),
+                status: cells[8].textContent.trim(),
+                total: cells[9].textContent.trim()
+            };
+
+            // Llenar el modal con los datos
+            document.getElementById("detalle-id").textContent = orderData.id;
+            document.getElementById("detalle-producto").textContent = "Product information";
+            document.getElementById("detalle-precio").textContent = orderData.total;
+            document.getElementById("detalle-impuesto").textContent = "Tax information";
+            document.getElementById("detalle-estado").textContent = orderData.status;
+            document.getElementById("detalle-fecha").textContent = orderData.departure;
+
+            // Mostrar modal
+            $('#detailsModal').modal('show');
+        });
+    });
+});
+</script>
 
 <script>
   // Genera PDF tomando los datos de la fila
@@ -110,16 +136,13 @@
     const btn = e.target.closest('.download-pdf');
     if (!btn) return;
     else {
-      
+
     }
 
     const row = btn.closest('tr');
     const cells = row.querySelectorAll('td');
 
-    // Índices basados en el thead de esta tabla:
-    // 0 Internal, 1 Shipment, 2 Client, 3 Origin, 4 Destination,
-    // 5 Container, 6 Departure, 7 Estimated, 8 Status, 9 Total,
-    // 10 Details (link), 11 PDF (botón)
+
     const data = {
       internal:   cells[0]?.textContent.trim() || '',
       shipment:   cells[1]?.textContent.trim() || '',

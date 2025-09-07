@@ -18,9 +18,9 @@ class ProductoController extends Controller
     {
         Producto::create([
             'nombre' => $request->input('nombre'),
-            'tipo' => $request->input('tipo'),
-            'descripcion' => $request->input('descripcion'),
-            'precio' => $request->input('precio'),
+            'precio_pallets' => $request->input('precio_pallets'),
+            'precio_boxes' => $request->input('precio_boxes'),
+            'descripcion' => $request->input('descripcion')
         ]);
         return redirect()->back()->with('success', 'Product added successfully.');
     }
@@ -29,9 +29,9 @@ class ProductoController extends Controller
     {
         $validatated= $request->validate([
             'nombre' => 'required|string',
-            'tipo' => 'required|string',
+            'precio_pallets' => 'required|numeric',
+            'precio_boxes' => 'required|numeric',
             'descripcion' => 'required|string',
-            'precio' => 'required|numeric',
         ]);
 
         $producto = Producto::findOrFail($id);
